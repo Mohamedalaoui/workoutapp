@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Background -->
+    <color name="background_splash">#009688</color>
+    <color name="background_content_list">#FFFFFF</color>
+    <color name="background_content">#E6E8E9</color>
+    <color name="list_selector_color">#00796B</color>
+    <color name="title_color">#2d2d2d</color>
+    <color name="caption_color">#818181</color>
+    <color name="title_holiday_color">#c71919</color>
+    <color name="divider_color">#CCCCCC</color>
+
+    <!--Text -->
+    <color name="text_sub_title">#777777</color>
+    <color name="text_title">#212121</color>
+    <!-- Theme -->
+    <color name="color_primary">#009688</color>
+    <color name="color_secondary">#1DE9B6</color>
+    <color name="color_primary_dark">#00796B</color>
+    <color name="text_color_primary">#FFFFFF</color>
+    <color name="color_accent">#FFFFFF</color>
+
+    <color name="background_gradient_color_start">#00000000</color>
+    <color name="background_gradient_color_end">#50000000</color>
+
+    <!--test-->
+    <color name="green">#00ff00</color>
+    <color name="blue">#0000ff</color>
+    <color name="red">#ff0000</color>
+</resources>

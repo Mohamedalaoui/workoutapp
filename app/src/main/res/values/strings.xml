@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Default from android -->
+    <string name="app_name">Daily Workout</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="subject">Hi, i just try new exercise on Daily Workout App for Android</string>
+    <string name="message">You can download Daily Workout App for Android at </string>
+    <string name="intro_message">Hi, i just try new exercise, </string>
+    <string name="extra_message">. You can also try this exercise by downloading </string>
+    <string name="here">here:</string>
+    <string name="google_play_url">https://play.google.com/store/apps/details?id=your.package.name</string>
+    <string name="share_to">Share to</string>
+
+    <!-- Need Change with your -->
+    <!-- Admob -->
+    <string name="admob_id">a15362082509a1c</string>
+
+    <!-- Menu -->
+    <string name="menu_share_it">Share it</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_rate_it">Rate it</string>
+    <string name="menu_about">About</string>
+
+    <!-- Tab title -->
+    <string name="tab_workouts">WORKOUTS</string>
+    <string name="tab_programs">PROGRAMS</string>
+
+    <!-- Label -->
+    <string name="loading_data">Loading data...</string>
+    <string name="no_data_program">there is no data for this day</string>
+    <string name="no_data_workout">there is no data for this workout</string>
+    <string name="internet_alert">No connection. Please enable your internet connection.</string>
+    <string name="lbl_no_result">No Result</string>
+    <string name="initial_time">00:00</string>
+
+    <!-- Button -->
+    <string name="btn_start_workout">Start Workout</string>
+    <string name="btn_add">Add to program</string>
+    <string name="btn_start">Start</string>
+    <string name="btn_stop">Stop</string>
+    <string name="btn_reset">Reset</string>
+
+
+    <string name="workout">Workout</string>
+    <string name="workouts">Workouts</string>
+
+    <string name="select_option">Select option</string>
+    <string-array name="options">
+        <item >Update</item>
+        <item >Delete</item>
+    </string-array>
+
+    <string name="pick_day">Pick day</string>
+    <string-array name="day_name">
+        <item >Sunday</item>
+        <item >Monday</item>
+        <item >Tuesday</item>
+        <item >Wednesday</item>
+        <item >Thursday</item>
+        <item >Friday</item>
+        <item >Saturday</item>
+    </string-array>
+
+    <string name="options">Options</string>
+    <string name="update">Update</string>
+    <string name="delete">Delete</string>
+    <string name="confirm">Confirm</string>
+    <string name="delete_message">Are you sure want to delete this from this day?</string>
+    <string name="workout_detail">Workout Detail</string>
+    <string name="stopwatch">Stopwatch</string>
+    <string name="about_app">About App</string>
+    <string name="success_add">successfully add this workout to</string>
+    <string name="failed_add">this workout has already been added to</string>
+    <string name="success_delete">successfully delete workout</string>
+    <string name="success_update">successfully update workout</string>
+    <string name="cancel">Cancel</string>
+    <string name="add">Add</string>
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <string name="title_activity_home">Home</string>
+
+    <string name="dummy_tittle">Crossover Crunsh</string>
+    <string name="dummy_time">01:00</string>
+</resources>
