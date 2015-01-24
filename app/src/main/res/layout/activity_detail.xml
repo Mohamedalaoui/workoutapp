@@ -53,8 +53,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/button_float_right"
-                    android:background="@color/color_primary"
-                    materialdesign:iconDrawable="@drawable/ic_add" />
+                    android:background="@color/color_primary"/>
 
                 <com.gc.materialdesign.views.ButtonFloat
                     android:id="@+id/btnStart"
@@ -64,7 +63,7 @@
                     android:layout_toLeftOf="@+id/btnAdd"
                     android:layout_marginRight="@dimen/button_between"
                     android:background="@color/color_primary"
-                    materialdesign:iconDrawable="@drawable/ic_begin" />
+                    materialdesign:iconDrawable="@drawable/ic_play" />
 
             </RelativeLayout>
 

@@ -8,6 +8,7 @@
     <dimen name="padding_main">10dp</dimen>
     <dimen name="padding_content">30dp</dimen>
     <dimen name="padding_content_bottom">15dp</dimen>
+    <dimen name="row_padding">16dp</dimen>
 
     <!-- Margin -->
     <dimen name="margin_content">30dp</dimen>
@@ -22,9 +23,12 @@
 
     <!-- Text size -->
     <dimen name="text_title_detail_size">24sp</dimen>
+    <dimen name="text_title">45sp</dimen>
+    <dimen name="text_timer">70sp</dimen>
     <dimen name="text_subtitle_detail_size">20sp</dimen>
     <dimen name="text_content">20sp</dimen>
     <dimen name="text_line_spacing">5dp</dimen>
+    <dimen name="text_content_size">16sp</dimen>
 
     <!-- Image -->
     <dimen name="image_height">200dp</dimen>

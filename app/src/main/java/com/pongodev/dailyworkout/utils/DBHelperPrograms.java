@@ -303,7 +303,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
     }
 
     // method to delete workout program from day
-    public void deleteData(int programID) {
+    public void deleteData(String programID) {
         // ask the database manager to delete the row of given id
         try {
             db.delete(TABLE_PROGRAMS, PROGRAM_ID + "=" + programID, null);

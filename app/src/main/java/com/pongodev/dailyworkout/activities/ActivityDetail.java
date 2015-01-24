@@ -3,11 +3,11 @@ package com.pongodev.dailyworkout.activities;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,7 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.gc.materialdesign.views.ButtonFlat;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.gc.materialdesign.widgets.SnackBar;
@@ -45,11 +45,11 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
     private ImageView imgThumbnail;
     private TextView  txtSteps;
     private LinearLayout lytContent;
-    private AdView adView;
-    private TextView lblNoResult, lblToolbarText, lblToolbarSubtext;
+    private TextView lblNoResult;
+    private TextView lblToolbarSubtext;
 
     // String to save data from activityHome
-    private String mName, mSteps, mTime, mImage, mId;
+    private String mName, mSteps, mTime, mImage, mId, mActivity;
     private int mSelectedDay;
 
     @Override
@@ -68,20 +68,21 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         Intent i= getIntent();
         mId         = i.getStringExtra(Utils.EXTRA_ID);
         mName       = i.getStringExtra(Utils.EXTRA_NAME);
+        mActivity   = i.getStringExtra(Utils.EXTRA_ACTIVITY);
 
         // connect view objects and xml ids
-        adView      = (AdView) findViewById(R.id.adView);
-        lytContent  = (LinearLayout) findViewById(R.id.lytContent);
-        txtSteps    = (TextView) findViewById(R.id.txtSteps);
-        ButtonFloat btnStart = (ButtonFloat) findViewById(R.id.btnStart);
-        ButtonFloat btnAdd = (ButtonFloat) findViewById(R.id.btnAdd);
-        prgLoading  = (ProgressBarCircularIndeterminate) findViewById(R.id.prgLoading);
+        AdView adView       = (AdView) findViewById(R.id.adView);
+        lytContent          = (LinearLayout) findViewById(R.id.lytContent);
+        txtSteps            = (TextView) findViewById(R.id.txtSteps);
+        ButtonFloat btnStart= (ButtonFloat) findViewById(R.id.btnStart);
+        ButtonFloat btnAdd  = (ButtonFloat) findViewById(R.id.btnAdd);
+        prgLoading          = (ProgressBarCircularIndeterminate) findViewById(R.id.prgLoading);
 
-        imgThumbnail        = (ImageView)findViewById(R.id.imgThumbnail);
-        lblToolbarText      = (TextView) findViewById(R.id.lblToolbarText);
-        lblToolbarSubtext   = (TextView) findViewById(R.id.lblToolbarSubtext);
-        lblNoResult         = (TextView) findViewById(R.id.lblNoResult);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        imgThumbnail            = (ImageView)findViewById(R.id.imgThumbnail);
+        TextView lblToolbarText = (TextView) findViewById(R.id.lblToolbarText);
+        lblToolbarSubtext       = (TextView) findViewById(R.id.lblToolbarSubtext);
+        lblNoResult             = (TextView) findViewById(R.id.lblNoResult);
+        Toolbar toolbar         = (Toolbar) findViewById(R.id.toolbar);
 
         lblToolbarText.setText(mName);
 
@@ -90,6 +91,12 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
 
         btnStart.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
+
+        if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_add));
+        } else {
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_remove));
+        }
 
          /* CHECK_PLAY_SERV = 1 means Google Play services version on the device
 	    supports the version of the client library you are using */
@@ -107,10 +114,6 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
                 Toast.makeText(this, getString(R.string.internet_alert), Toast.LENGTH_SHORT).show();
             }
         }
-
-        // Check database
-        dbWorkouts = new DBHelperWorkouts(this);
-        dbWorkouts.checkDBWorkouts();
 
         // call asynctask class to get data from database
         new getDataList().execute();
@@ -179,8 +182,45 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         }
     }
 
+    // asynctask class that is used to fetch data from database in background
+    private class discardData extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            // TODO Auto-generated method stub
+            // show progress dialog when fetching data from database
+            super.onPreExecute();
+            prgLoading.setVisibility(View.VISIBLE);
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            // TODO Auto-generated method stub
+            discardDataFromDatabase();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            // TODO Auto-generated method stub
+            // when finishing fetching data, close progress dialog and show data on listview
+            // if available, otherwise show label no result
+            super.onPostExecute(aVoid);
+            prgLoading.setVisibility(View.GONE);
+            new SnackBar(ActivityDetail.this,
+                    getString(R.string.success_discard)).show();
+            finish();
+
+        }
+    }
+
     // Method to fetch data from database
     public void getDataFromDatabase() {
+        // Check database
+        dbWorkouts = new DBHelperWorkouts(this);
+        dbWorkouts.checkDBWorkouts();
+
         data = dbWorkouts.getDetail(mId);
 
         if(!data.isEmpty()){
@@ -191,6 +231,14 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
             mSteps  = data.get(4).toString();
         }
 
+    }
+
+    // Method to fetch data from database
+    public void discardDataFromDatabase() {
+        // Check database
+        dbPrograms = new DBHelperPrograms(getApplicationContext());
+        dbPrograms.checkDBPrograms();
+        dbPrograms.deleteData(mId);
     }
 
     // method to create add dialog
@@ -232,7 +280,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
 
                 // if data is not available add data to this day program, otherwise, show toast message
                 if(!isAvailable){
-                    dbPrograms.addData(Integer.valueOf(mId), mName, Integer.valueOf(mSelectedDay), mImage, mTime, mSteps);
+                    dbPrograms.addData(Integer.valueOf(mId), mName, mSelectedDay, mImage, mTime, mSteps);
                     new SnackBar(ActivityDetail.this,
                             getString(R.string.success_add)+" "+day_name[mSelectedDay]).show();
 
@@ -281,15 +329,36 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnStart:
-                 Intent i = new Intent(getApplicationContext(), ActivityStopWatch.class);
-                 i.putExtra(Utils.EXTRA_ID, mId);
-                 i.putExtra(Utils.EXTRA_NAME, mName);
-                 i.putExtra(Utils.EXTRA_WORKOUT_TIME, mTime);
-                 startActivity(i);
+                Intent i = new Intent(getApplicationContext(), ActivityStopWatch.class);
+                i.putExtra(Utils.EXTRA_ID, mId);
+                i.putExtra(Utils.EXTRA_NAME, mName);
+                i.putExtra(Utils.EXTRA_WORKOUT_TIME, mTime);
+                startActivity(i);
+
                  break;
 
             case R.id.btnAdd:
-                addDialog();
+                if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
+                    addDialog();
+                } else {
+                    new MaterialDialog.Builder(ActivityDetail.this)
+                            .content(R.string.dialog_content_discard)
+                            .positiveText(R.string.dialog_button_positif_discard)
+                            .negativeText(R.string.dialog_button_negatif)
+                            .positiveColorRes(R.color.color_primary)
+                            .negativeColorRes(R.color.color_primary)
+                            .contentColorRes(R.color.text_sub_title)
+                            .backgroundColorRes(R.color.background_content_list)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    new discardData().execute();
+                                }
+
+                            })
+                            .show();
+                }
+
                  break;
 
             default:

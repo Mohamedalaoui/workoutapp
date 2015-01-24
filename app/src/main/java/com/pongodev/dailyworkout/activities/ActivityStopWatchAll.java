@@ -3,6 +3,7 @@ package com.pongodev.dailyworkout.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -12,14 +13,19 @@ import android.os.SystemClock;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -34,13 +40,15 @@ import java.util.ArrayList;
 /**
  * Created by keong on 1/2/2015.
  */
-public class ActivityStopWatch extends ActionBarActivity implements View.OnClickListener{
+public class ActivityStopWatchAll extends ActionBarActivity implements View.OnClickListener{
 
     // create object of views
-    private TextView txtTimer, txtTitle;
+    private TextView txtTimer, txtTimerRest, txtNextName;
+    private TextSwitcher txtTitle;
     private ButtonFlat btnReset;
     private ButtonFloat btnStart;
     private ViewFlipper flipper;
+    private RelativeLayout lytRest;
 
     // create object of WakeLock class
     private PowerManager.WakeLock wl;
@@ -50,6 +58,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     private boolean STOP = false;
     private boolean START = true;
 
+    private int paramData=0;
     // create object of handler class
     // and set variables for time
     private Handler myHandler = new Handler();
@@ -59,9 +68,12 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     private long finalTime = 0L;
 
     // create variable to store data
-    String mId;
-    private String mName, mTime;
-    private ArrayList<String> Images = new ArrayList<String>();
+    private String mId;
+    private ArrayList<String> mListId     = new ArrayList<String>();
+    private ArrayList<String> mListName   = new ArrayList<String>();
+    private ArrayList<String> mListImage  = new ArrayList<String>();
+    private ArrayList<String> mListTime   = new ArrayList<String>();
+    private ArrayList<String> Images      = new ArrayList<String>();
 
     private int ScreenHeight = 0;
 
@@ -75,28 +87,55 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stopwatch);
+        setContentView(R.layout.activity_stopwatch_all);
 
         utils = new Utils(this);
 
         // get values that passed from previous page
         Intent i = getIntent();
-        mId     = i.getStringExtra(utils.EXTRA_ID);
-        mName   = i.getStringExtra(utils.EXTRA_NAME);
-        mTime   = i.getStringExtra(utils.EXTRA_WORKOUT_TIME);
+        mListId    = i.getStringArrayListExtra(utils.EXTRA_ID);
+        mListName  = i.getStringArrayListExtra(utils.EXTRA_NAME);
+        mListTime  = i.getStringArrayListExtra(utils.EXTRA_TIME);
 
         // connect views object and views id on xml
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
+        txtTitle = (TextSwitcher) findViewById(R.id.txtTitle);
         txtTimer = (TextView) findViewById(R.id.txtTimer);
+        txtTimerRest = (TextView) findViewById(R.id.txtTimerRest);
+        txtNextName  = (TextView) findViewById(R.id.txtNextName);
         btnStart = (ButtonFloat) findViewById(R.id.btnStart);
         btnReset = (ButtonFlat) findViewById(R.id.btnReset);
         flipper  = (ViewFlipper) findViewById(R.id.flipper);
         toolbar  = (Toolbar) findViewById(R.id.toolbar);
+        lytRest  = (RelativeLayout) findViewById(R.id.lytRest);
 
-        // get PowerManager to keep screen on
+        // Set the ViewFactory of the TextSwitcher that will create TextView object when asked
+        txtTitle.setFactory(new ViewSwitcher.ViewFactory() {
+
+            public View makeView() {
+                // TODO Auto-generated method stub
+                // create new textView and set the properties like clolr, size etc
+                TextView myText = new TextView(ActivityStopWatchAll.this);
+                myText.setGravity(Gravity.CENTER_HORIZONTAL);
+                myText.setTypeface(null, Typeface.BOLD);
+                myText.setTextSize(24);
+                myText.setTextColor(getResources().getColor(R.color.color_primary));
+                return myText;
+            }
+        });
+
+        // Declare the in and out animations and initialize them
+        Animation in = AnimationUtils.loadAnimation(this,android.R.anim.slide_in_left);
+        Animation out = AnimationUtils.loadAnimation(this,android.R.anim.slide_out_right);
+
+        // Set the animation type of textSwitcher
+        txtTitle.setInAnimation(in);
+        txtTitle.setOutAnimation(out);
+
+        // Get PowerManager to keep screen on
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "SCREEN ON");
 
+        // Set icon Drawable start button
         btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play));
 
         // Set up the toolbar.
@@ -127,7 +166,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                     default:
                         return true;
                 }
-                //return true;
+
             }
         });
     }
@@ -142,7 +181,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
             // show progress dialog when fetching data from database
             progress= ProgressDialog.show(
-                    ActivityStopWatch.this,
+                    ActivityStopWatchAll.this,
                     "",
                     getString(R.string.loading_data),
                     true);
@@ -163,19 +202,30 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
             // when finishing fetching data close progress dialog and show data to views
             progress.dismiss();
 
-            txtTitle.setText(mName);
+            txtTitle.setText(mListName.get(paramData));
 
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
             int screenWidth = dm.widthPixels;
             ScreenHeight = screenWidth / 2 + 50;
 
+            if(paramData > 0){
+                //flipper.startFlipping();
+                wl.acquire();
+                FLAG = START;
+                btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                btnReset.setEnabled(false);
+                startTime = SystemClock.uptimeMillis();
+                myHandler.postDelayed(updateTimerMethod, 0);
+                flipper.removeAllViews();
+            }
+
             for(int i=0;i<Images.size();i++){
-                FrameLayout fl = new FrameLayout(ActivityStopWatch.this);
+                FrameLayout fl = new FrameLayout(ActivityStopWatchAll.this);
                 FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(screenWidth, ScreenHeight);
                 fl.setLayoutParams(lp);
 
-                ImageView imgWorkout = new ImageView(ActivityStopWatch.this);
+                ImageView imgWorkout = new ImageView(ActivityStopWatchAll.this);
                 imgWorkout.setScaleType(ImageView.ScaleType.FIT_CENTER);
                 int imagedata = getResources().getIdentifier(Images.get(i), "drawable", getPackageName());
                 imgWorkout.setImageResource(imagedata);
@@ -185,34 +235,31 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                         ViewGroup.LayoutParams.MATCH_PARENT));
 
                 flipper.addView(fl);
+                flipper.startFlipping();
 
             }
 
-
         }
 
-        // method to clear arraylist variable before used
-        void clearData(){
-            Images.clear();
+    }
+
+    // method to get data from database
+    private void getDataFromDatabase(){
+        dbWorkouts = new DBHelperWorkouts(getApplicationContext());
+        dbWorkouts.checkDBWorkouts();
+
+
+        data = dbWorkouts.getImages(mListId.get(paramData));
+
+        Images.clear();
+
+        // store data to arraylist variable
+        for(int i=0;i<data.size();i++){
+            ArrayList<Object> row = data.get(i);
+
+            Images.add(row.get(0).toString());
         }
 
-        // method to get data from database
-        public void getDataFromDatabase(){
-            dbWorkouts = new DBHelperWorkouts(getApplicationContext());
-            dbWorkouts.checkDBWorkouts();
-
-            data = dbWorkouts.getImages(mId);
-
-            clearData();
-
-            // store data to arraylist variable
-            for(int i=0;i<data.size();i++){
-                ArrayList<Object> row = data.get(i);
-
-                Images.add(row.get(0).toString());
-            }
-
-        }
     }
 
     // thread to run stopwatch
@@ -235,7 +282,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
             Paramtimer = String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
             txtTimer.setText(timer);
 
-            if(Paramtimer.equals(mTime)){
+            if(Paramtimer.equals(mListTime.get(paramData))){
                 MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.alert_beep);
                 mp.start();
 
@@ -245,23 +292,31 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                 btnReset.setEnabled(true);
                 myHandler.removeCallbacks(this);
 
-                new MaterialDialog.Builder(ActivityStopWatch.this)
-                        .title(R.string.dialog_title)
-                        .content(R.string.dialog_content)
-                        .positiveText(R.string.dialog_button_positif)
-                        .positiveColorRes(R.color.color_primary)
-                        .titleGravity(GravityEnum.CENTER)
-                        .titleColorRes(R.color.color_primary)
-                        .contentColorRes(R.color.text_sub_title)
-                        .backgroundColorRes(R.color.background_content_list)
-                        .callback(new MaterialDialog.ButtonCallback() {
-                            @Override
-                            public void onPositive(MaterialDialog dialog) {
-                                finish();
-                            }
+                paramData +=1;
 
-                        })
-                        .show();
+                if(paramData != (mListId.size())){
+                    // call synctask to get images
+                    getRest();
+                } else {
+                    new MaterialDialog.Builder(ActivityStopWatchAll.this)
+                            .title(R.string.dialog_title)
+                            .content(R.string.dialog_content)
+                            .positiveText(R.string.dialog_button_positif)
+                            .positiveColorRes(R.color.color_primary)
+                            .titleGravity(GravityEnum.CENTER)
+                            .titleColorRes(R.color.color_primary)
+                            .contentColorRes(R.color.text_sub_title)
+                            .backgroundColorRes(R.color.background_content_list)
+                            .callback(new MaterialDialog.ButtonCallback() {
+                                @Override
+                                public void onPositive(MaterialDialog dialog) {
+                                    finish();
+                                }
+
+                            })
+                            .show();
+                }
+
 
             }else{
                 myHandler.postDelayed(this, 0);
@@ -269,6 +324,47 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         }
 
     };
+
+    // thread to run stopwatch
+    private Runnable updateTimerRest = new Runnable() {
+
+        public void run() {
+            String timer = "";
+            String Paramtimer = "";
+            timeInMillies = SystemClock.uptimeMillis() - startTime;
+
+            finalTime = timeSwap + timeInMillies;
+
+            int seconds = (int) (finalTime / 1000);
+            int minutes = seconds / 60;
+            seconds = seconds % 60;
+            int milliseconds = (int) (finalTime / 10);
+            milliseconds = milliseconds % 100;
+
+            timer = String.format("%02d", minutes) + ":" + String.format("%02d", seconds) + ":" + String.format("%02d", milliseconds);
+            Paramtimer = String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+            txtTimerRest.setText(timer);
+
+            if (Paramtimer.equals("00:15")) {
+                MediaPlayer mp = MediaPlayer.create(getApplicationContext(), R.raw.alert_beep);
+                mp.start();
+
+                myHandler.removeCallbacks(this);
+
+                lytRest.setVisibility(View.GONE);
+                new getDataList().execute();
+
+            } else {
+                myHandler.postDelayed(this, 0);
+            }
+
+        }
+
+    };
+    private void getRest(){
+        lytRest.setVisibility(View.VISIBLE);
+        myHandler.postDelayed(updateTimerRest, 0);
+    }
 
     // Configuration in Android API 21 to set window to full screen.
     @Override
@@ -298,6 +394,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                     btnReset.setEnabled(false);
                     startTime = SystemClock.uptimeMillis();
                     myHandler.postDelayed(updateTimerMethod, 0);
+
                 }else{
                     flipper.stopFlipping();
                     wl.release();

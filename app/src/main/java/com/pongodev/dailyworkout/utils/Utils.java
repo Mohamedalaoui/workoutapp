@@ -11,6 +11,7 @@ public class Utils {
 	Context ctx;
 	public static final String EXTRA_ID 	= "idSelected";
     public static final String EXTRA_NAME 	= "NameSelected";
+    public static final String EXTRA_TIME 	= "TimeSelected";
     public static final String EXTRA_WORKOUT_TIME 	= "workoutTimeSelected";
     public static final String EXTRA_ACTIVITY 	    = "activity";
 

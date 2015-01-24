@@ -10,10 +10,8 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.astuetz.PagerSlidingTabStrip;
-import com.gc.materialdesign.widgets.SnackBar;
 import com.google.android.gms.ads.AdView;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -101,6 +99,23 @@ public class ActivityHome extends ActionBarActivity implements
                 Log.i("checkPlayServices", "No valid Google Play Services APK found.");
             }
         }
+
+        // Handle item menu in toolbar.
+        toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                switch (menuItem.getItemId()) {
+                    case R.id.menuAbout:
+                        // Open about screen.
+                        Intent aboutIntent = new Intent(getApplicationContext(), ActivityAbout.class);
+                        startActivity(aboutIntent);
+                        overridePendingTransition(R.anim.open_next, R.anim.close_main);
+                        return true;
+                    default:
+                        return true;
+                }
+            }
+        });
 
     }
 
