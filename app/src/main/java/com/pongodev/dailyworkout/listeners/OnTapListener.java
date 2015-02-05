@@ -1,8 +1,5 @@
-package com.pongodev.dailyworkout.utils;
+package com.pongodev.dailyworkout.listeners;
 
-/**
- * Created by keong on 12/23/2014.
- */
 public interface OnTapListener {
     public void onTapView(String ID, String Name);
 }

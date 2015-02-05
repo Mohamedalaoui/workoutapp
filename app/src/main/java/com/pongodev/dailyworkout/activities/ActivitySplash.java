@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.activities;
 
 import android.content.Intent;
@@ -19,7 +22,7 @@ public class ActivitySplash extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         // Configuration in Android API below 21 to set window to full screen.
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);

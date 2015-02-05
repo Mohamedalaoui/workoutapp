@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.fragments;
 
 import android.app.Activity;
@@ -9,20 +12,16 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.adapters.AdapterPrograms;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.pongodev.dailyworkout.utils.DBHelperPrograms;
-import com.pongodev.dailyworkout.utils.OnTapListener;
 
 import java.util.ArrayList;
 
-/**
- * Created by keong on 12/24/2014.
- */
 public class FragmentTabPrograms extends Fragment{
     private OnSelectedListener mCallback;
 
@@ -33,29 +32,15 @@ public class FragmentTabPrograms extends Fragment{
 
     // Create object of custom adapter
     private AdapterPrograms la;
-    private DBHelperPrograms dbPrograms;
 
     // Create arraylist variables to store data
-    private ArrayList<String> programDayIds = new ArrayList<String>();
-    private ArrayList<String> programDayNames = new ArrayList<String>();
-    private ArrayList<String> programTotal = new ArrayList<String>();
-
-    // Create arraylist variable to store object data from database
-    private ArrayList<ArrayList<Object>> data;
+    private ArrayList<String> programDayIds = new ArrayList<>();
+    private ArrayList<String> programDayNames = new ArrayList<>();
+    private ArrayList<String> programTotal = new ArrayList<>();
 
     // Create interface for listener method
     public interface OnSelectedListener{
         public void onSelectedDay(String selectedID, String selectedName);
-    }
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static FragmentTabPrograms newInstance() {
-        FragmentTabPrograms fragment = new FragmentTabPrograms();
-
-        return fragment;
     }
 
     @Override
@@ -72,10 +57,6 @@ public class FragmentTabPrograms extends Fragment{
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-
-        // Check database
-        dbPrograms = new DBHelperPrograms(getActivity());
-        dbPrograms.checkDBPrograms();
 
         // Call asynctask class to get data from database
         new getDataList().execute();
@@ -145,17 +126,22 @@ public class FragmentTabPrograms extends Fragment{
     // method to fetch data from database
     private void getDataFromDatabase(){
         clearData();
-        data = dbPrograms.getAllDays();
+
+        // Check database
+        DBHelperPrograms dbPrograms = new DBHelperPrograms(getActivity());
+        dbPrograms.checkDBPrograms();
+
+        ArrayList<ArrayList<Object>> data = dbPrograms.getAllDays();
 
         // Store data to arraylist variables
-        for(int i=0;i<data.size();i++){
+        for(int i=0;i< data.size();i++){
             ArrayList<Object> row = data.get(i);
 
             programDayIds.add(row.get(0).toString());
             programDayNames.add(row.get(1).toString());
             programTotal.add(row.get(2).toString());
         }
-
+        dbPrograms.close();
     }
 
     private void clearData(){
@@ -172,7 +158,6 @@ public class FragmentTabPrograms extends Fragment{
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
-        dbPrograms.close();
         super.onDestroy();
     }
 

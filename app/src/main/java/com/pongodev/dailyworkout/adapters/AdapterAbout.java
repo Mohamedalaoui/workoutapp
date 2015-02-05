@@ -1,6 +1,8 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.adapters;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pongodev.dailyworkout.R;
-import com.pongodev.dailyworkout.utils.OnTapAboutListener;
+import com.pongodev.dailyworkout.listeners.OnTapAboutListener;
 
 import java.util.ArrayList;
 
@@ -20,15 +22,11 @@ public class AdapterAbout extends RecyclerView.Adapter<AdapterAbout.ViewHolder>
     private final ArrayList<String> summaries;
     private OnTapAboutListener onTapAboutListener;
 
-    private Context mContext;
-
-    public AdapterAbout(Context context)
+    public AdapterAbout()
     {
 
-        this.titles = new ArrayList<String>();
-        this.summaries = new ArrayList<String>();
-
-        mContext = context;
+        this.titles = new ArrayList<>();
+        this.summaries = new ArrayList<>();
 
     }
 

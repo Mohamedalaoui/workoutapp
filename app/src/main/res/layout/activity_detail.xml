@@ -53,6 +53,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentRight="true"
                     android:layout_marginRight="@dimen/button_float_right"
+                    materialdesign:rippleSpeed="20"
                     android:background="@color/color_primary"/>
 
                 <com.gc.materialdesign.views.ButtonFloat
@@ -62,6 +63,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_toLeftOf="@+id/btnAdd"
                     android:layout_marginRight="@dimen/button_between"
+                    materialdesign:rippleSpeed="20"
                     android:background="@color/color_primary"
                     materialdesign:iconDrawable="@drawable/ic_play" />
 
@@ -102,15 +104,26 @@
 
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/lblNoResult"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/text_sub_title"
-        android:text="@string/lbl_no_result"
-        android:layout_centerInParent="true"
+    <RelativeLayout
+        android:id="@+id/lytNoResult"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:background="@color/background_content"
+        android:orientation="vertical"
         android:visibility="gone"
-        style="@android:style/TextAppearance.Medium"/>
+        android:fitsSystemWindows="true"
+        android:layout_above="@+id/adView">
+        <TextView
+            android:id="@+id/lblNoResult"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_sub_title"
+            android:text="@string/lbl_no_result"
+            android:layout_centerInParent="true"
+            style="@android:style/TextAppearance.Medium"/>
+    </RelativeLayout>
+
 
     <com.google.android.gms.ads.AdView
         android:id="@+id/adView"

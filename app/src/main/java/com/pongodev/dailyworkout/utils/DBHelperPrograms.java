@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.utils;
 
 import android.content.ContentValues;
@@ -15,9 +18,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-/**
- * Created by keong on 12/23/2014.
- */
 public class DBHelperPrograms extends SQLiteOpenHelper {
 
 
@@ -31,10 +31,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
 
     private final Context context;
 
-    // tables and fields name of database
-    private final String TABLE_DAYS     = "tbl_days";
     private final String DAY_ID         = "day_id";
-    private final String DAY_NAME       = "day_name";
 
     private final String TABLE_PROGRAMS = "tbl_programs";
     private final String PROGRAM_ID     = "program_id";
@@ -42,7 +39,6 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
     private final String PROGRAM_NAME   = "name";
     private final String PROGRAM_IMAGE  = "image";
     private final String PROGRAM_TIME   = "time";
-    private final String PROGRAM_STEPS  = "steps";
 
 
     public DBHelperPrograms(Context context) {
@@ -55,13 +51,10 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
     public void createDataBase() throws IOException {
 
         boolean dbExist = checkDataBase();
-        SQLiteDatabase db_Read = null;
+        SQLiteDatabase db_Read;
 
 
-        if (dbExist) {
-            //do nothing - database already exist
-
-        } else {
+        if (!dbExist) {
             db_Read = this.getReadableDatabase();
             db_Read.close();
 
@@ -112,11 +105,6 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
     }
 
     @Override
-    public void close() {
-        db.close();
-    }
-
-    @Override
     public void onCreate(SQLiteDatabase db) {
 
     }
@@ -128,10 +116,12 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
 
     // method to get day from database
     public ArrayList<ArrayList<Object>> getAllDays() {
-        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<>();
 
-        Cursor cursor = null;
+        Cursor cursor;
         try {
+            String TABLE_DAYS = "tbl_days";
+            String DAY_NAME = "day_name";
             cursor = db.query(
                     TABLE_DAYS,
                     new String[]{DAY_ID, DAY_NAME},
@@ -140,7 +130,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
                 do {
-                    ArrayList<Object> dataList = new ArrayList<Object>();
+                    ArrayList<Object> dataList = new ArrayList<>();
                     long id = countWorkouts(cursor.getLong(0));
 
                     dataList.add(cursor.getLong(0));
@@ -173,9 +163,9 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
 
     // method to get all workout programs by day from database
     public ArrayList<ArrayList<Object>> getWorkoutListByDay(String selectedID) {
-        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<>();
 
-        Cursor cursor = null;
+        Cursor cursor;
         try {
             cursor = db.query(
                     TABLE_PROGRAMS,
@@ -185,7 +175,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()) {
                 do {
-                    ArrayList<Object> dataList = new ArrayList<Object>();
+                    ArrayList<Object> dataList = new ArrayList<>();
                     dataList.add(cursor.getLong(0));
                     dataList.add(cursor.getLong(1));
                     dataList.add(cursor.getString(2));
@@ -207,48 +197,11 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
         return dataArrays;
     }
 
-    // method to get detail workout from database
-    public ArrayList<Object> getDetail(int selectedID) {
-
-        ArrayList<Object> rowArray = new ArrayList<Object>();
-        Cursor cursor;
-
-        try {
-            cursor = db.query(
-                    TABLE_PROGRAMS,
-                    new String[]{PROGRAM_ID, PROGRAM_WORKOUT_ID, PROGRAM_NAME, DAY_ID, PROGRAM_IMAGE, PROGRAM_TIME, PROGRAM_STEPS},
-                    PROGRAM_ID + " = " + selectedID,
-                    null, null, null, null, null);
-
-            cursor.moveToFirst();
-
-            if (!cursor.isAfterLast()) {
-                do {
-                    rowArray.add(cursor.getLong(0));
-                    rowArray.add(cursor.getLong(1));
-                    rowArray.add(cursor.getString(2));
-                    rowArray.add(cursor.getLong(3));
-                    rowArray.add(cursor.getString(4));
-                    rowArray.add(cursor.getString(5));
-                    rowArray.add(cursor.getString(6));
-                }
-                while (cursor.moveToNext());
-            }
-
-            cursor.close();
-        } catch (SQLException e) {
-            Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
-
-        return rowArray;
-    }
-
     // method to check whether workout program is available or not on day
     public boolean isDataAvailable(int dayID, int workoutID) {
         boolean isAvailable = false;
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         try {
             cursor = db.query(
@@ -279,25 +232,13 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
         values.put(DAY_ID, dayID);
         values.put(PROGRAM_IMAGE, image);
         values.put(PROGRAM_TIME, time);
+        String PROGRAM_STEPS = "steps";
         values.put(PROGRAM_STEPS, steps);
 
         try {
             db.insert(TABLE_PROGRAMS, null, values);
         } catch (Exception e) {
             Log.e("DB ERROR", e.toString());
-            e.printStackTrace();
-        }
-    }
-
-    // method to update day of workout program
-    public void updateData(int selectedDayID, int programID) {
-        ContentValues values = new ContentValues();
-        values.put(DAY_ID, selectedDayID);
-
-        try {
-            db.update(TABLE_PROGRAMS, values, PROGRAM_ID + "=" + programID, null);
-        } catch (Exception e) {
-            Log.e("DB Error", e.toString());
             e.printStackTrace();
         }
     }

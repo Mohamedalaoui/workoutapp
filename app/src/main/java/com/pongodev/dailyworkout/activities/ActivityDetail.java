@@ -1,3 +1,7 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
+
 package com.pongodev.dailyworkout.activities;
 
 import android.app.AlertDialog;
@@ -7,14 +11,13 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.gc.materialdesign.views.ButtonFloat;
@@ -22,7 +25,6 @@ import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.google.android.gms.ads.AdView;
 import com.pongodev.dailyworkout.R;
-import com.pongodev.dailyworkout.utils.Ads;
 import com.pongodev.dailyworkout.utils.DBHelperPrograms;
 import com.pongodev.dailyworkout.utils.DBHelperWorkouts;
 import com.pongodev.dailyworkout.utils.Utils;
@@ -30,13 +32,9 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
-/**
- * Created by keong on 12/29/2014.
- */
 public class ActivityDetail extends ActionBarActivity implements View.OnClickListener{
 
     private ProgressBarCircularIndeterminate prgLoading;
-    private DBHelperWorkouts dbWorkouts;
     private DBHelperPrograms dbPrograms;
 
     private ArrayList<Object> data;
@@ -45,7 +43,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
     private ImageView imgThumbnail;
     private TextView  txtSteps;
     private LinearLayout lytContent;
-    private TextView lblNoResult;
+    private RelativeLayout lytNoResult;
     private TextView lblToolbarSubtext;
 
     // String to save data from activityHome
@@ -64,27 +62,45 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        // Get Data from ActivityHome
-        Intent i= getIntent();
-        mId         = i.getStringExtra(Utils.EXTRA_ID);
-        mName       = i.getStringExtra(Utils.EXTRA_NAME);
-        mActivity   = i.getStringExtra(Utils.EXTRA_ACTIVITY);
+        // Intent i= getIntent().getExtras();
+        if (getIntent().getExtras() != null) {
+            Intent i=getIntent();
+            mId         = i.getStringExtra(Utils.ARG_ID);
+            mName       = i.getStringExtra(Utils.ARG_NAME);
+            mActivity   = i.getStringExtra(Utils.ARG_PAGE);
+
+            Utils.saveString(Utils.ARG_ID, mId, this);
+            Utils.saveString(Utils.ARG_NAME, mName, this);
+            Utils.saveString(Utils.ARG_PAGE, mActivity, this);
+        } else {
+            mId       = Utils.loadString(Utils.ARG_ID, this);
+            mName     = Utils.loadString(Utils.ARG_NAME, this);
+            mActivity = Utils.loadString(Utils.ARG_PAGE, this);
+        }
+
 
         // connect view objects and xml ids
-        AdView adView       = (AdView) findViewById(R.id.adView);
+        AdView adView = (AdView) findViewById(R.id.adView);
         lytContent          = (LinearLayout) findViewById(R.id.lytContent);
+        lytNoResult         = (RelativeLayout) findViewById(R.id.lytNoResult);
         txtSteps            = (TextView) findViewById(R.id.txtSteps);
-        ButtonFloat btnStart= (ButtonFloat) findViewById(R.id.btnStart);
-        ButtonFloat btnAdd  = (ButtonFloat) findViewById(R.id.btnAdd);
+        ButtonFloat btnStart = (ButtonFloat) findViewById(R.id.btnStart);
+        ButtonFloat btnAdd = (ButtonFloat) findViewById(R.id.btnAdd);
         prgLoading          = (ProgressBarCircularIndeterminate) findViewById(R.id.prgLoading);
 
         imgThumbnail            = (ImageView)findViewById(R.id.imgThumbnail);
         TextView lblToolbarText = (TextView) findViewById(R.id.lblToolbarText);
         lblToolbarSubtext       = (TextView) findViewById(R.id.lblToolbarSubtext);
-        lblNoResult             = (TextView) findViewById(R.id.lblNoResult);
-        Toolbar toolbar         = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         lblToolbarText.setText(mName);
+
+        String activePage = Utils.ARG_WORKOUT;
+        if(activePage.equals(Utils.ARG_WORKOUT)){
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_add));
+        } else {
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_remove));
+        }
 
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -92,28 +108,9 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         btnStart.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
 
-        if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
-            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_add));
-        } else {
-            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_remove));
-        }
-
-         /* CHECK_PLAY_SERV = 1 means Google Play services version on the device
-	    supports the version of the client library you are using */
-        if(Utils.loadPreferences(Utils.CHECK_PLAY_SERV, this)==1){
-
-            // Check the connection
-            if(Utils.isNetworkAvailable(this)){
-                // Condition for admob (0=gone, 1=visible)
-                if(Utils.paramAdmob==true){
-
-                    adView.setVisibility(View.VISIBLE);
-                    Ads.loadAds(adView);
-                }
-            } else {
-                Toast.makeText(this, getString(R.string.internet_alert), Toast.LENGTH_SHORT).show();
-            }
-        }
+        boolean isAdmobVisible = Utils.admobVisibility(adView, Utils.ARG_ADMOB_VISIBILITY);
+        if(isAdmobVisible)
+            Utils.loadAdmob(adView);
 
         // call asynctask class to get data from database
         new getDataList().execute();
@@ -175,7 +172,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
                         .load(image)
                         .into(imgThumbnail);
             } else {
-                lblNoResult.setVisibility(View.VISIBLE);
+                lytNoResult.setVisibility(View.VISIBLE);
                 lytContent.setVisibility(View.GONE);
             }
 
@@ -218,7 +215,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
     // Method to fetch data from database
     public void getDataFromDatabase() {
         // Check database
-        dbWorkouts = new DBHelperWorkouts(this);
+        DBHelperWorkouts dbWorkouts = new DBHelperWorkouts(this);
         dbWorkouts.checkDBWorkouts();
 
         data = dbWorkouts.getDetail(mId);
@@ -230,6 +227,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
             mTime   = data.get(3).toString();
             mSteps  = data.get(4).toString();
         }
+        dbWorkouts.close();
 
     }
 
@@ -239,6 +237,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         dbPrograms = new DBHelperPrograms(getApplicationContext());
         dbPrograms.checkDBPrograms();
         dbPrograms.deleteData(mId);
+        dbPrograms.close();
     }
 
     // method to create add dialog
@@ -288,6 +287,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
                     new SnackBar(ActivityDetail.this,
                             getString(R.string.failed_add)+" "+day_name[mSelectedDay]).show();
                 }
+                dbPrograms.close();
             }
         });
         // set negative button
@@ -318,7 +318,6 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         return i;
     }
 
-
     @Override
     public void onBackPressed() {
         super.onBackPressed();
@@ -330,15 +329,15 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         switch (v.getId()){
             case R.id.btnStart:
                 Intent i = new Intent(getApplicationContext(), ActivityStopWatch.class);
-                i.putExtra(Utils.EXTRA_ID, mId);
-                i.putExtra(Utils.EXTRA_NAME, mName);
-                i.putExtra(Utils.EXTRA_WORKOUT_TIME, mTime);
+                i.putExtra(Utils.ARG_ID, mId);
+                i.putExtra(Utils.ARG_NAME, mName);
+                i.putExtra(Utils.ARG_TIME, mTime);
                 startActivity(i);
 
                  break;
 
             case R.id.btnAdd:
-                if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
+                if(mActivity.equals(Utils.ARG_WORKOUT)){
                     addDialog();
                 } else {
                     new MaterialDialog.Builder(ActivityDetail.this)

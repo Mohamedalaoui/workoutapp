@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.fragments;
 
 import android.app.Activity;
@@ -9,14 +12,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.adapters.AdapterWorkouts;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.pongodev.dailyworkout.utils.DBHelperWorkouts;
-import com.pongodev.dailyworkout.utils.OnTapListener;
 import com.pongodev.dailyworkout.utils.Utils;
 
 import java.util.ArrayList;
@@ -29,35 +31,18 @@ public class FragmentTabWorkouts extends Fragment {
     private ProgressBarCircularIndeterminate prgLoading;
     private TextView lblNoResult;
 
-    //Declare instace of Utils class
-    private Utils utils;
-    private DBHelperWorkouts dbWorkouts;
-
     // create object of custom adapter
     private AdapterWorkouts la;
 
     // create arraylist variables to store data
-    private ArrayList<String> workoutIds = new ArrayList<String>();
-    private ArrayList<String> workoutName = new ArrayList<String>();
-    private ArrayList<String> workoutImage = new ArrayList<String>();
-    private ArrayList<String> workoutTotal = new ArrayList<String>();
-
-    // create arraylist variable to store object data from database
-    private ArrayList<ArrayList<Object>> data;
+    private ArrayList<String> workoutIds = new ArrayList<>();
+    private ArrayList<String> workoutName = new ArrayList<>();
+    private ArrayList<String> workoutImage = new ArrayList<>();
+    private ArrayList<String> workoutTotal = new ArrayList<>();
 
     // create interface for listener method
     public interface OnSelectedListener {
         public void onSelected(String selectedID, String selectedName);
-    }
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static FragmentTabWorkouts newInstance() {
-        FragmentTabWorkouts fragment = new FragmentTabWorkouts();
-
-        return fragment;
     }
 
     @Override
@@ -76,10 +61,6 @@ public class FragmentTabWorkouts extends Fragment {
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
-
-        // Check database
-        dbWorkouts = new DBHelperWorkouts(getActivity());
-        dbWorkouts.checkDBWorkouts();
 
         // call asynctask class to get data from database
         new getDataList().execute();
@@ -150,8 +131,10 @@ public class FragmentTabWorkouts extends Fragment {
 
     // method to fetch data from database
     public void getDataFromDatabase() {
-
-        data = dbWorkouts.getAllCategories();
+        // Check database
+        DBHelperWorkouts dbWorkouts = new DBHelperWorkouts(getActivity());
+        dbWorkouts.checkDBWorkouts();
+        ArrayList<ArrayList<Object>> data = dbWorkouts.getAllCategories();
 
         for (int i = 0; i < data.size(); i++) {
             ArrayList<Object> row = data.get(i);
@@ -161,13 +144,13 @@ public class FragmentTabWorkouts extends Fragment {
             workoutImage.add(row.get(2).toString());
             workoutTotal.add(row.get(3).toString());
         }
+       dbWorkouts.close();
 
     }
 
     /** Called before the activity is destroyed */
     @Override
     public void onDestroy() {
-        dbWorkouts.close();
         super.onDestroy();
     }
 

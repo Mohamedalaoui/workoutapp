@@ -31,7 +31,6 @@
         android:background="@color/color_primary"
         materialdesign:iconDrawable="@drawable/ic_play" />
 
-
     <TextView
         android:id="@+id/lblNoResult"
         android:layout_width="wrap_content"

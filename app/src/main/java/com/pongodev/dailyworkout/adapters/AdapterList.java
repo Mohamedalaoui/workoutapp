@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.adapters;
 
 import android.content.Context;
@@ -9,7 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pongodev.dailyworkout.R;
-import com.pongodev.dailyworkout.utils.OnTapListener;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -29,10 +32,10 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder>
     public AdapterList(Context context)
     {
 
-        this.ListId = new ArrayList<String>();
-        this.ListName = new ArrayList<String>();
-        this.ListTime = new ArrayList<String>();
-        this.ListImage = new ArrayList<String>();
+        this.ListId = new ArrayList<>();
+        this.ListName = new ArrayList<>();
+        this.ListTime = new ArrayList<>();
+        this.ListImage = new ArrayList<>();
 
         mContext = context;
 
@@ -66,10 +69,10 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder>
 
         // set data to image view
         int image = mContext.getResources().getIdentifier(ListImage.get(position), "drawable", mContext.getPackageName());
+
         Picasso.with(mContext)
                 .load(image)
                 .into(viewHolder.imgThumbnail);
-
     }
 
     @Override

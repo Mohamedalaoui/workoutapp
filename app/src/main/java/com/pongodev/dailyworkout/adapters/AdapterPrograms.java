@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.adapters;
 
 import android.content.Context;
@@ -8,7 +11,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.pongodev.dailyworkout.R;
-import com.pongodev.dailyworkout.utils.OnTapListener;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
 
 import java.util.ArrayList;
 
@@ -24,9 +27,9 @@ public class AdapterPrograms extends RecyclerView.Adapter<AdapterPrograms.ViewHo
 
     public AdapterPrograms(Context context)
     {
-        this.programDayIds = new ArrayList<String>();
-        this.programDayNames = new ArrayList<String>();
-        this.programTotals = new ArrayList<String>();
+        this.programDayIds = new ArrayList<>();
+        this.programDayNames = new ArrayList<>();
+        this.programTotals = new ArrayList<>();
 
         mContext = context;
     }

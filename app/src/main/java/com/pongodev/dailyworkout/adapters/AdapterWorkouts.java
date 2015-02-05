@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.adapters;
 
 import android.content.Context;
@@ -9,7 +12,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.pongodev.dailyworkout.R;
-import com.pongodev.dailyworkout.utils.OnTapListener;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -27,10 +31,10 @@ public class AdapterWorkouts extends RecyclerView.Adapter<AdapterWorkouts.ViewHo
 
     public AdapterWorkouts(Context context)
     {
-        this.workoutIds = new ArrayList<String>();
-        this.workoutNames = new ArrayList<String>();
-        this.workoutTotals = new ArrayList<String>();
-        this.workoutImages = new ArrayList<String>();
+        this.workoutIds = new ArrayList<>();
+        this.workoutNames = new ArrayList<>();
+        this.workoutTotals = new ArrayList<>();
+        this.workoutImages = new ArrayList<>();
 
         mContext = context;
 
@@ -71,8 +75,10 @@ public class AdapterWorkouts extends RecyclerView.Adapter<AdapterWorkouts.ViewHo
 
         // set data to image view
         int image = mContext.getResources().getIdentifier(workoutImages.get(position), "drawable", mContext.getPackageName());
-        viewHolder.imgCategory.setImageResource(image);
 
+        Picasso.with(mContext)
+                .load(image)
+                .into(viewHolder.imgCategory);
 
     }
 

@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.fragments;
 
 
@@ -14,7 +17,7 @@ import android.view.ViewGroup;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.activities.ActivityAbout;
 import com.pongodev.dailyworkout.adapters.AdapterAbout;
-import com.pongodev.dailyworkout.utils.OnTapAboutListener;
+import com.pongodev.dailyworkout.listeners.OnTapAboutListener;
 
 import java.util.ArrayList;
 
@@ -26,22 +29,12 @@ public class FragmentAbout extends Fragment {
     OnItemSelectedListener mCallback;
 
     // Create arraylist variables to store data.
-    ArrayList<String> titles = new ArrayList<String>();
-    ArrayList<String> summaries = new ArrayList<String>();
+    ArrayList<String> titles = new ArrayList<>();
+    ArrayList<String> summaries = new ArrayList<>();
 
     // Create interface listener.
     public interface OnItemSelectedListener {
         public void onItemSelected(int position);
-    }
-
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static FragmentAbout newInstance() {
-        FragmentAbout fragment = new FragmentAbout();
-
-        return fragment;
     }
 
     public FragmentAbout() {
@@ -64,7 +57,7 @@ public class FragmentAbout extends Fragment {
         // Get data with asynctask.
         new syncGetData().execute();
 
-        adapterAbout = new AdapterAbout(getActivity());
+        adapterAbout = new AdapterAbout();
 
         adapterAbout.setOnTapAboutListener(new OnTapAboutListener() {
             @Override

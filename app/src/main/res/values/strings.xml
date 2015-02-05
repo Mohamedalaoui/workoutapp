@@ -34,8 +34,8 @@
     <string name="no_data_workout">there is no data for this workout</string>
     <string name="internet_alert">No connection. Please enable your internet connection.</string>
     <string name="lbl_no_result">No Result</string>
-    <string name="initial_time">00:00:00</string>
-    <string name="next">Next</string>
+    <string name="initial_time">00:00</string>
+    <string name="next">THE NEXT:</string>
 
     <!-- Button -->
     <string name="btn_start_workout">Start Workout</string>
@@ -51,6 +51,12 @@
     <string name="dialog_button_positif">DONE</string>
     <string name="dialog_button_positif_discard">DISCARD</string>
     <string name="dialog_button_negatif">CANCEL</string>
+
+    <!-- Banner ad id. Insert your own banner id, you can get banner id via admob. -->
+    <string name="banner_ad_unit_id">BANNER_AD_UNIT_ID</string>
+
+    <!-- Interstitial ad id. Insert your own interstitial id, you can get interstitial id via admob. -->
+    <string name="interstitial_ad_unit_id">INTERSTITIAL_AD_UNIT_ID</string>
 
     <string name="workout">Workout</string>
     <string name="workouts">Workouts</string>
@@ -93,6 +99,7 @@
     <string name="title_activity_home">Home</string>
 
     <string name="dummy_tittle">Crossover Crunsh</string>
+    <string name="dummy_total">1/7</string>
     <string name="dummy_time">01:00</string>
 
     <!-- Titles in about page -->
@@ -108,7 +115,7 @@
 
     <!-- Summaries in about page -->
     <string-array name="about_summaries">
-        <item>Spatullr</item>
+        <item>Daily Workout</item>
         <item>Version 2.1.0</item>
         <item>Pongodev</item>
         <item>Copyright 2014 pongodev. All rights reserved.</item>

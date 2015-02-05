@@ -5,13 +5,20 @@
 
     <!-- Padding -->
     <dimen name="padding_content_adapter">10dp</dimen>
-    <dimen name="padding_main">10dp</dimen>
+    <dimen name="padding_main">16dp</dimen>
     <dimen name="padding_content">30dp</dimen>
     <dimen name="padding_content_bottom">15dp</dimen>
     <dimen name="row_padding">16dp</dimen>
+    <dimen name="padding_top">30dp</dimen>
+
+    <!-- Thumbnail -->
+    <dimen name="thumb_row_width">100dp</dimen>
+    <dimen name="thumb_row_height">100dp</dimen>
+    <dimen name="thumb_border">1dp</dimen>
 
     <!-- Margin -->
     <dimen name="margin_content">30dp</dimen>
+    <dimen name="margin_right">10dp</dimen>
 
     <!-- Button -->
     <dimen name="button_float_right">16sp</dimen>

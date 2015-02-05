@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
         android:allowBackup="true"
@@ -29,33 +30,35 @@
         </activity>
         <activity
             android:name=".activities.ActivityHome"
-            android:label="@string/title_activity_home">
+            android:label="@string/title_activity_home"
+            android:screenOrientation="portrait">
         </activity>
 
         <activity
             android:name=".activities.ActivityList"
             android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityHome">
         </activity>
 
         <activity
             android:name=".activities.ActivityDetail"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme"
-            android:parentActivityName=".activities.ActivityHome">
+            android:screenOrientation="portrait"
+            android:parentActivityName=".activities.ActivityList">
         </activity>
 
         <activity
             android:name=".activities.ActivityStopWatch"
             android:label=""
-            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityDetail">
         </activity>
 
         <activity
             android:name=".activities.ActivityStopWatchAll"
             android:label=""
-            android:theme="@style/AppTheme"
+            android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityDetail">
         </activity>
 

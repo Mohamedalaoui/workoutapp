@@ -1,6 +1,8 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.utils;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -15,9 +17,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 
-/**
- * Created by keong on 12/23/2014.
- */
 public class DBHelperWorkouts extends SQLiteOpenHelper {
     // path of database when app installed on device
     // if you change your package name, make sure to also change this package name
@@ -29,18 +28,10 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
     public static SQLiteDatabase db;
     private final Context context;
 
-    private final String TABLE_CATEGORIES   = "tbl_categories";
-    private final String TABLE_IMAGES       = "tbl_images";
     private final String TABLE_WORKOUTS     = "tbl_workouts";
     private final String CATEGORY_ID        = "category_id";
-    private final String CATEGORY_NAME      = "category_name";
-    private final String CATEGORY_IMAGE     = "category_image";
-    private final String IMAGES_ID          = "image_id";
-    private final String IMAGES_WORKOUT_ID  = "workout_id";
-    private final String IMAGES_FILE        = "image";
     private final String WORKOUTS_ID        = "workout_id";
     private final String WORKOUTS_NAME      = "name";
-    private final String WORKOUTS_CATEGORY_ID= "category_id";
     private final String WORKOUTS_IMAGE     = "image";
     private final String WORKOUTS_TIME      = "time";
     private final String WORKOUTS_STEPS     = "steps";
@@ -54,12 +45,10 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
     public void createDataBase() throws IOException {
 
         boolean dbExist = checkDataBase();
-        SQLiteDatabase db_Read = null;
+        SQLiteDatabase db_Read;
 
         // if database exist delete database and copy the new one
-        if(dbExist){
-            // do nothing - database already exist
-        }else{
+        if (!dbExist) {
             db_Read = this.getReadableDatabase();
             db_Read.close();
 
@@ -105,12 +94,6 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
         db = SQLiteDatabase.openDatabase(myPath, null, SQLiteDatabase.OPEN_READWRITE);
     }
 
-    // close database after it is used
-    @Override
-    public void close() {
-        db.close();
-    }
-
     @Override
     public void onCreate(SQLiteDatabase db) {}
 
@@ -120,11 +103,14 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
 
     // method to get category data from database
     public ArrayList<ArrayList<Object>> getAllCategories(){
-        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<>();
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         try{
+            String TABLE_CATEGORIES = "tbl_categories";
+            String CATEGORY_NAME = "category_name";
+            String CATEGORY_IMAGE = "category_image";
             cursor = db.query(
                     TABLE_CATEGORIES,
                     new String[]{CATEGORY_ID, CATEGORY_NAME, CATEGORY_IMAGE},
@@ -133,7 +119,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()){
                 do{
-                    ArrayList<Object> dataList = new ArrayList<Object>();
+                    ArrayList<Object> dataList = new ArrayList<>();
                     long id = countWorkouts(cursor.getLong(0));
 
                     dataList.add(cursor.getLong(0));
@@ -166,9 +152,9 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
 
     // method to get all location data from database
     public ArrayList<ArrayList<Object>> getWorkoutListByCategory(String selectedID){
-        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<>();
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         try{
             cursor = db.query(
@@ -179,7 +165,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()){
                 do{
-                    ArrayList<Object> dataList = new ArrayList<Object>();
+                    ArrayList<Object> dataList = new ArrayList<>();
 
                     dataList.add(cursor.getLong(0));
                     dataList.add(cursor.getString(1));
@@ -205,7 +191,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
     // method to get location data from database
     public ArrayList<Object> getDetail(String selectedID){
 
-        ArrayList<Object> rowArray = new ArrayList<Object>();
+        ArrayList<Object> rowArray = new ArrayList<>();
         Cursor cursor;
 
         try{
@@ -242,11 +228,12 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
 
     // method to get all location data from database
     public ArrayList<ArrayList<Object>> getImages(String workoutID){
-        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<ArrayList<Object>>();
+        ArrayList<ArrayList<Object>> dataArrays = new ArrayList<>();
 
-        Cursor cursor = null;
+        Cursor cursor;
 
         try{
+            String TABLE_IMAGES = "tbl_images";
             cursor = db.query(
                     TABLE_IMAGES,
                     new String[]{WORKOUTS_IMAGE},
@@ -255,7 +242,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             cursor.moveToFirst();
             if (!cursor.isAfterLast()){
                 do{
-                    ArrayList<Object> dataList = new ArrayList<Object>();
+                    ArrayList<Object> dataList = new ArrayList<>();
 
                     dataList.add(cursor.getString(0));
 

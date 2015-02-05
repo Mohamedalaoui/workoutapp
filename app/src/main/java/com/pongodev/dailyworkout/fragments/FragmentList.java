@@ -1,3 +1,6 @@
+/*
+* Copyright (c) 2015 Pongodev. All Rights Reserved.
+*/
 package com.pongodev.dailyworkout.fragments;
 
 import android.app.Activity;
@@ -6,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,9 +18,9 @@ import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.adapters.AdapterList;
+import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.pongodev.dailyworkout.utils.DBHelperPrograms;
 import com.pongodev.dailyworkout.utils.DBHelperWorkouts;
-import com.pongodev.dailyworkout.utils.OnTapListener;
 import com.pongodev.dailyworkout.utils.Utils;
 
 import java.util.ArrayList;
@@ -33,20 +35,14 @@ public class FragmentList extends Fragment implements View.OnClickListener{
     private TextView lblNoResult;
     private ButtonFloat btnStartAll;
 
-    private ArrayList<ArrayList<Object>> data;
-
     // create object of custom adapter
     private AdapterList la;
 
-    // Declare instace of Utils and DBHelperWorkouts class
-    private DBHelperWorkouts dbWorkouts;
-    private DBHelperPrograms dbPrograms;
-
     // Create arraylist variables to store data
-    private ArrayList<String> ListId     = new ArrayList<String>();
-    private ArrayList<String> ListName   = new ArrayList<String>();
-    private ArrayList<String> ListImage  = new ArrayList<String>();
-    private ArrayList<String> ListTime   = new ArrayList<String>();
+    private ArrayList<String> ListId     = new ArrayList<>();
+    private ArrayList<String> ListName   = new ArrayList<>();
+    private ArrayList<String> ListImage  = new ArrayList<>();
+    private ArrayList<String> ListTime   = new ArrayList<>();
 
     // Create variables to store selected value
     private String mSelectedID, mActivity;
@@ -61,34 +57,6 @@ public class FragmentList extends Fragment implements View.OnClickListener{
         public void onClick(ArrayList<String> listId, ArrayList<String> listName, ArrayList<String> listTime);
     }
 
-    /**
-     * Returns a new instance of this fragment for the given section
-     * number.
-     */
-    public static FragmentTabWorkouts newInstance() {
-        FragmentTabWorkouts fragment = new FragmentTabWorkouts();
-
-        return fragment;
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        // save the current article selection in case we need to recreate the fragment
-        outState.putString(Utils.EXTRA_ID, mSelectedID);
-        outState.putString(Utils.EXTRA_ACTIVITY, mActivity);
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (savedInstanceState != null) {
-            mSelectedID = savedInstanceState.getString(Utils.EXTRA_ID);
-            mActivity = savedInstanceState.getString(Utils.EXTRA_ACTIVITY);
-        }
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -96,11 +64,14 @@ public class FragmentList extends Fragment implements View.OnClickListener{
         // TODO Auto-generated method stub
         View v = inflater.inflate(R.layout.fragment_list, container, false);
 
-        if (savedInstanceState != null) {
-            mSelectedID = savedInstanceState.getString(Utils.EXTRA_ID);
-            mActivity = savedInstanceState.getString(Utils.EXTRA_ACTIVITY);
-        }
         setRetainInstance(true);
+
+        Bundle args = getArguments();
+        if (args != null) {
+            // set article based on argument passed in
+            mSelectedID = args.getString(Utils.ARG_ID);
+            mActivity   = args.getString(Utils.ARG_PAGE);
+        }
 
         // Connect view objects and view id on xml.
         recyclerView = (RecyclerView) v.findViewById(R.id.recycler_view);
@@ -109,6 +80,10 @@ public class FragmentList extends Fragment implements View.OnClickListener{
         btnStartAll  = (ButtonFloat) v.findViewById(R.id.btnStartAll);
 
         btnStartAll.setOnClickListener(FragmentList.this);
+
+        if(mActivity.equals(Utils.ARG_WORKOUT)){
+            btnStartAll.setVisibility(View.GONE);
+        }
 
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
@@ -123,30 +98,9 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             }
         });
 
-        return v;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        // during startup, check if there are arguments passed to the fragment.
-        // onStart is a good place to do this because the layout has already been
-        // applied to the fragment at this point so we can safely call the method
-        // below that sets the article text.
-
-        Bundle args = getArguments();
-        if (args != null) {
-            // set article based on argument passed in
-            mSelectedID = args.getString(Utils.EXTRA_ID);
-            mActivity   = args.getString(Utils.EXTRA_ACTIVITY);
-        }
-
-        if(mActivity.equals(Utils.ACTIVITY_PROGRAM)){
-            btnStartAll.setVisibility(View.VISIBLE);
-        }
         new getDataList().execute();
 
+        return v;
     }
 
     @Override
@@ -196,12 +150,19 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             prgLoading.setVisibility(View.GONE);
 
             if(ListId.isEmpty()){
-                lblNoResult.setVisibility(View.VISIBLE);
+                btnStartAll.setVisibility(View.GONE);
             } else {
                 lblNoResult.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
                 la.updateList(ListId, ListName, ListImage, ListTime);
             }
+
+            if(!ListId.isEmpty() && mActivity.equals(Utils.ARG_PROGRAM) && ListId.size() > 1){
+                btnStartAll.setVisibility(View.VISIBLE);
+            } else {
+                btnStartAll.setVisibility(View.GONE);
+            }
+
             recyclerView.setAdapter(la);
 
         }
@@ -211,10 +172,11 @@ public class FragmentList extends Fragment implements View.OnClickListener{
     public void getDataFromDatabase() {
 
         // Check the data for workout or programs
-        if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
+        ArrayList<ArrayList<Object>> data;
+        if(mActivity.equals(Utils.ARG_WORKOUT)){
 
             // Check database
-            dbWorkouts = new DBHelperWorkouts(getActivity());
+            DBHelperWorkouts dbWorkouts = new DBHelperWorkouts(getActivity());
             dbWorkouts.checkDBWorkouts();
             data = dbWorkouts.getWorkoutListByCategory(mSelectedID);
             for (int i = 0; i < data.size(); i++) {
@@ -224,10 +186,11 @@ public class FragmentList extends Fragment implements View.OnClickListener{
                 ListImage.add(row.get(2).toString());
                 ListTime.add(row.get(3).toString());
             }
+            dbWorkouts.close();
         } else {
 
             // Check database
-            dbPrograms = new DBHelperPrograms(getActivity());
+            DBHelperPrograms dbPrograms = new DBHelperPrograms(getActivity());
             dbPrograms.checkDBPrograms();
             data = dbPrograms.getWorkoutListByDay(mSelectedID);
             for (int i = 0; i < data.size(); i++) {
@@ -237,7 +200,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
                 ListImage.add(row.get(3).toString());
                 ListTime.add(row.get(4).toString());
             }
-
+            dbPrograms.close();
         }
 
     }
@@ -246,11 +209,6 @@ public class FragmentList extends Fragment implements View.OnClickListener{
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mActivity.equals(Utils.ACTIVITY_WORKOUT)){
-            dbWorkouts.close();
-        } else {
-            dbPrograms.close();
-        }
     }
 
     @Override
