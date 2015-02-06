@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class DBHelperWorkouts extends SQLiteOpenHelper {
     // path of database when app installed on device
     // if you change your package name, make sure to also change this package name
-    private static String DB_PATH = "/data/data/com.pongodev.dailyworkout/databases/";
+    private static String DB_PATH = Utils.ARG_DATABASE_PATH;
 
     // create database name and version
     private final static String DB_NAME = "db_workouts";

@@ -1,23 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ads="http://schemas.android.com/apk/res-auto"
     xmlns:materialdesign="http://schemas.android.com/apk/res-auto"
-    android:orientation="horizontal"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/color_primary_dark">
+    android:layout_height="match_parent">
 
-    <LinearLayout
+     <LinearLayout
         android:id="@+id/lytContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignParentTop="true"
         android:orientation="vertical"
-        android:fitsSystemWindows="true"
         android:layout_above="@+id/adView">
-
-        <include layout="@layout/toolbar_center"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,17 +28,40 @@
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentTop="true"
-                    android:background="@color/background_content_list">
+                    android:layout_alignParentTop="true">
 
                     <ImageView
                         android:id="@+id/imgThumbnail"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/image_height"
-                        android:contentDescription="@string/app_name"
                         android:src="@drawable/ic_abdominal"
-                        android:scaleType="fitCenter"/>
+                        android:scaleType="centerCrop"/>
 
+                    <include layout="@layout/toolbar_transparent" />
+
+                    <LinearLayout
+                        android:id="@+id/lytTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:layout_gravity="bottom"
+                        android:padding="@dimen/padding_gradient"
+                        android:background="@drawable/gradient_transparent_background">
+                        <TextView
+                            android:id="@+id/txtTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_title_detail_size"
+                            android:textColor="@color/text_title_detail"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:id="@+id/txtSubTitle"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/text_subtitle_detail_size"
+                            android:textColor="@color/text_row_subtitle_color"/>
+                    </LinearLayout>
                 </FrameLayout>
 
                 <com.gc.materialdesign.views.ButtonFloat
@@ -65,7 +83,7 @@
                     android:layout_marginRight="@dimen/button_between"
                     materialdesign:rippleSpeed="20"
                     android:background="@color/color_primary"
-                    materialdesign:iconDrawable="@drawable/ic_play" />
+                    materialdesign:iconDrawable="@drawable/ic_play_36dp"/>
 
             </RelativeLayout>
 
@@ -82,9 +100,7 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:background="@color/background_content"
-                android:paddingBottom="@dimen/padding_content_bottom"
-                android:paddingRight="@dimen/padding_content"
-                android:paddingLeft="@dimen/padding_content"
+                android:padding="@dimen/padding_main"
                 >
 
                 <ScrollView

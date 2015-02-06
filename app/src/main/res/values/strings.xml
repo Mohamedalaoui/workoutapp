@@ -29,11 +29,11 @@
     <string name="tab_programs">PROGRAMS</string>
 
     <!-- Label -->
-    <string name="loading_data">Loading data...</string>
+    <string name="loading_data">Loading data…</string>
     <string name="no_data_program">there is no data for this day</string>
     <string name="no_data_workout">there is no data for this workout</string>
     <string name="internet_alert">No connection. Please enable your internet connection.</string>
-    <string name="lbl_no_result">No Result</string>
+    <string name="lbl_no_result">No Workouts</string>
     <string name="initial_time">00:00</string>
     <string name="next">THE NEXT:</string>
 
@@ -46,7 +46,8 @@
 
     <!-- Dialog -->
     <string name="dialog_title">CONGRATULATION</string>
-    <string name="dialog_content">Good job, You already finish all exercice.</string>
+    <string name="dialog_all_exercises">Good job, You already have finished all exercices.</string>
+    <string name="dialog_exercise">Good job, You already have finished exercice.</string>
     <string name="dialog_content_discard">Discard this from your workout ?</string>
     <string name="dialog_button_positif">DONE</string>
     <string name="dialog_button_positif_discard">DISCARD</string>
@@ -61,11 +62,6 @@
     <string name="workout">Workout</string>
     <string name="workouts">Workouts</string>
 
-    <string name="select_option">Select option</string>
-    <string-array name="options">
-        <item >Update</item>
-        <item >Delete</item>
-    </string-array>
 
     <string name="pick_day">Pick day</string>
     <string-array name="day_name">
@@ -94,13 +90,6 @@
     <string name="cancel">Cancel</string>
     <string name="add">Add</string>
 
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
-    <string name="title_activity_home">Home</string>
-
-    <string name="dummy_tittle">Crossover Crunsh</string>
-    <string name="dummy_total">1/7</string>
-    <string name="dummy_time">01:00</string>
 
     <!-- Titles in about page -->
     <string-array name="about_titles">

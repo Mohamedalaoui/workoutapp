@@ -24,6 +24,7 @@ public class FragmentSectionsPagerAdapter extends FragmentPagerAdapter {
             case 0:
                 // Top Rated fragment activity
                 return new FragmentTabWorkouts();
+
             case 1:
                 // Games fragment activity
                 return new FragmentTabPrograms();

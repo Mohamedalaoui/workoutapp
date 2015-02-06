@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.ads.AdListener;
@@ -28,15 +29,24 @@ public class Utils {
     public static final String ARG_LIST_NAME    = "activityListName";
     public static final String ARG_LIST_PAGE    = "listPage";
     public static final String ARG_SOUND        = "sound";
+    public static final String ARG_TRIGGER      = "trigger";
+    public static final String ARG_TAB_POSITION = "tabPosition";
     public static final int ARG_SOUND_ON        = 1;
-    public static final int ARG_SOUND_OFF   = 0;
-    public static final int ARG_GONE        = 8;
-    public static final int ARG_DEBUGGING   = 1;
+    public static final int ARG_SOUND_OFF       = 0;
+    public static final int ARG_GONE            = 0;
+    public static final int ARG_DEBUGGING       = 1;
+    public static final String ARG_PARENT_ACTIVITY = "parent_activity";
+    public static final String ARG_ACTIVITY_LIST   = "activities.ActivityList";
 
+    // Configurable parameters. you can configure these parameter.
+    // Set database path. It must be similar with package name.
+    public static final String ARG_DATABASE_PATH = "/data/data/com.pongodev.dailyworkout/databases/";
+    // For every recipe detail you want to display interstitial ad
+    public static final int ARG_TRIGGER_VALUE = 3;
     // Admob visibility parameter. set 0 to show admob and 8 to hide.
-    public static final int ARG_ADMOB_VISIBILITY = 0;
+    public static final int ARG_ADMOB_VISIBILITY = 1;
     // Set value to 1 if you are still in development process, and zero if you are ready to publish the app.
-    public static final int ARG_ADMOB_DEVELOPMENT_TYPE = 1;
+    public static final int ARG_ADMOB_DEVELOPMENT_TYPE = 0;
     // Set default category data, you can see the name id in sqlite database.
     public static final String ARG_DEFAULT_REST = "00:15";
     // Set default volume

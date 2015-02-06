@@ -39,7 +39,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
     private AdapterList la;
 
     // Create arraylist variables to store data
-    private ArrayList<String> ListId     = new ArrayList<>();
+    private ArrayList<String> ListmId    = new ArrayList<>();
     private ArrayList<String> ListName   = new ArrayList<>();
     private ArrayList<String> ListImage  = new ArrayList<>();
     private ArrayList<String> ListTime   = new ArrayList<>();
@@ -49,12 +49,12 @@ public class FragmentList extends Fragment implements View.OnClickListener{
 
     // Create interface for listener method
     public interface OnSelectedListener {
-        public void onSelected(String selectedID, String selectedName);
+        public void onSelected(String selectedmId, String selectedName);
     }
 
     // Create interface for listener method
     public interface OnClickListener {
-        public void onClick(ArrayList<String> listId, ArrayList<String> listName, ArrayList<String> listTime);
+        public void onClick(ArrayList<String> ListmId, ArrayList<String> listName, ArrayList<String> listTime);
     }
 
 
@@ -90,15 +90,13 @@ public class FragmentList extends Fragment implements View.OnClickListener{
         recyclerView.setLayoutManager(layoutManager);
 
         la = new AdapterList(getActivity());
+
         la.setOnTapListener(new OnTapListener() {
             @Override
-            public void onTapView(String ID, String selectedName) {
-
-                mCallback.onSelected(ID, selectedName);
+            public void onTapView(String mId, String Name) {
+                mCallback.onSelected(mId, Name);
             }
         });
-
-        new getDataList().execute();
 
         return v;
     }
@@ -128,7 +126,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             super.onPreExecute();
             prgLoading.setVisibility(View.VISIBLE);
             recyclerView.setVisibility(View.GONE);
-            ListId.clear();
+            ListmId.clear();
             ListName.clear();
             ListImage.clear();
             ListTime.clear();
@@ -149,15 +147,16 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             super.onPostExecute(aVoid);
             prgLoading.setVisibility(View.GONE);
 
-            if(ListId.isEmpty()){
+            if(ListmId.isEmpty()){
                 btnStartAll.setVisibility(View.GONE);
+                lblNoResult.setVisibility(View.VISIBLE);
             } else {
                 lblNoResult.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);
-                la.updateList(ListId, ListName, ListImage, ListTime);
+                la.updateList(ListmId, ListName, ListImage, ListTime);
             }
 
-            if(!ListId.isEmpty() && mActivity.equals(Utils.ARG_PROGRAM) && ListId.size() > 1){
+            if(!ListmId.isEmpty() && mActivity.equals(Utils.ARG_PROGRAM) && ListmId.size() > 1){
                 btnStartAll.setVisibility(View.VISIBLE);
             } else {
                 btnStartAll.setVisibility(View.GONE);
@@ -169,8 +168,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
     }
 
     // Method to fetch data from database
-    public void getDataFromDatabase() {
-
+    private void getDataFromDatabase() {
         // Check the data for workout or programs
         ArrayList<ArrayList<Object>> data;
         if(mActivity.equals(Utils.ARG_WORKOUT)){
@@ -181,7 +179,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             data = dbWorkouts.getWorkoutListByCategory(mSelectedID);
             for (int i = 0; i < data.size(); i++) {
                 ArrayList<Object> row = data.get(i);
-                ListId.add(row.get(0).toString());
+                ListmId.add(row.get(0).toString());
                 ListName.add(row.get(1).toString());
                 ListImage.add(row.get(2).toString());
                 ListTime.add(row.get(3).toString());
@@ -195,7 +193,7 @@ public class FragmentList extends Fragment implements View.OnClickListener{
             data = dbPrograms.getWorkoutListByDay(mSelectedID);
             for (int i = 0; i < data.size(); i++) {
                 ArrayList<Object> row = data.get(i);
-                ListId.add(row.get(0).toString());
+                ListmId.add(row.get(0).toString());
                 ListName.add(row.get(2).toString());
                 ListImage.add(row.get(3).toString());
                 ListTime.add(row.get(4).toString());
@@ -205,17 +203,36 @@ public class FragmentList extends Fragment implements View.OnClickListener{
 
     }
 
-    /** Called before the activity is destroyed */
+    private void updateWorkout(String mId, String mCurrentActivity){
+        mSelectedID = mId;
+        mActivity   = mCurrentActivity;
+        new getDataList().execute();
+    }
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onStart() {
+        super.onStart();
+
+        // During startup, check if there are arguments passed to the fragment.
+        // onStart is a good place to do this because the layout has already been
+        // applied to the fragment at this point so we can safely call the method
+        // below that sets the article text.
+
+        Bundle args = getArguments();
+        if (args != null) {
+            // Set recipes based on argument passed in
+            updateWorkout(args.getString(Utils.ARG_ID), args.getString(Utils.ARG_PAGE));
+        } else if (!mSelectedID.equals("")) {
+            // Set recipes based on saved instance state defined during onCreateView
+            updateWorkout(mSelectedID, mActivity);
+        }
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.btnStartAll:
-                mCallbackClick.onClick(ListId, ListName, ListTime);
+                mCallbackClick.onClick(ListmId, ListName, ListTime);
                 break;
 
             default:

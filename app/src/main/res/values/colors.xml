@@ -6,15 +6,23 @@
     <color name="background_content_list">#FFFFFF</color>
     <color name="background_content_transparant">#aa2d2d2d</color>
     <color name="background_content">#E6E8E9</color>
+    <color name="background_rest">#ec000000</color>
     <color name="list_selector_color">#00796B</color>
     <color name="title_color">#2d2d2d</color>
+    <color name="timer_color">#2d2d2d</color>
     <color name="caption_color">#818181</color>
     <color name="title_holiday_color">#c71919</color>
     <color name="divider_color">#CCCCCC</color>
 
+    <!-- Button -->
+    <color name="btnflat_disable">#40000000</color>
+    <color name="btnflat_enable">#1E88E5</color>
+
+
     <!--Text -->
     <color name="text_sub_title">#777777</color>
     <color name="text_title">#212121</color>
+    <color name="text_title_detail">#ffffff</color>
     <color name="text_header">#ffffff</color>
 
     <!-- Theme -->

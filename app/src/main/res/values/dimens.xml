@@ -4,9 +4,9 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
 
     <!-- Padding -->
-    <dimen name="padding_content_adapter">10dp</dimen>
+    <dimen name="padding_content_adapter">16dp</dimen>
     <dimen name="padding_main">16dp</dimen>
-    <dimen name="padding_content">30dp</dimen>
+    <dimen name="padding_gradient">20dp</dimen>
     <dimen name="padding_content_bottom">15dp</dimen>
     <dimen name="row_padding">16dp</dimen>
     <dimen name="padding_top">30dp</dimen>
@@ -19,6 +19,7 @@
     <!-- Margin -->
     <dimen name="margin_content">30dp</dimen>
     <dimen name="margin_right">10dp</dimen>
+    <dimen name="view_margin_left">110dp</dimen>
 
     <!-- Button -->
     <dimen name="button_float_right">16sp</dimen>
@@ -31,6 +32,7 @@
     <!-- Text size -->
     <dimen name="text_title_detail_size">24sp</dimen>
     <dimen name="text_title">45sp</dimen>
+    <dimen name="text_title_stopwatch">24sp</dimen>
     <dimen name="text_timer">70sp</dimen>
     <dimen name="text_subtitle_detail_size">20sp</dimen>
     <dimen name="text_content">20sp</dimen>
@@ -38,17 +40,13 @@
     <dimen name="text_content_size">16sp</dimen>
 
     <!-- Image -->
-    <dimen name="image_height">200dp</dimen>
-    <dimen name="frame_image_height">227dp</dimen>
-
+    <dimen name="image_height">250dp</dimen>
+    <dimen name="frame_image_height">277dp</dimen>
+    <dimen name="image_flipper_height">300dp</dimen>
+    <dimen name="frame_image_flipper_height">320dp</dimen>
     <!-- Height -->
     <dimen name="divider_height">1dp</dimen>
-    <dimen name="thumb_height">100dp</dimen>
-
-
-
-
-
-
+    <dimen name="thumb_height">80dp</dimen>
+    <dimen name="thumb_width">80dp</dimen>
 
 </resources>

@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.google.android.gms.ads.AdView;
@@ -22,14 +23,14 @@ public class ActivityList extends ActionBarActivity implements
         FragmentList.OnClickListener{
 
     private String mActivity;
+    private String mName;
+    private String mId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment);
 
-        String mName;
-        String mId;
         if (getIntent().getExtras() != null) {
             Intent i=getIntent();
             mId         = i.getStringExtra(Utils.ARG_ID);
@@ -45,16 +46,18 @@ public class ActivityList extends ActionBarActivity implements
             mActivity = Utils.loadString(Utils.ARG_LIST_PAGE, this);
         }
 
-        Bundle arguments = new Bundle();
-        arguments.putString(Utils.ARG_ID, mId);
-        arguments.putString(Utils.ARG_NAME, mName);
-        arguments.putString(Utils.ARG_PAGE, mActivity);
-        FragmentList fragment = new FragmentList();
-        fragment.setArguments(arguments);
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.item_container, fragment)
-                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
-                .commit();
+        if (savedInstanceState == null) {
+            Bundle arguments = new Bundle();
+            arguments.putString(Utils.ARG_ID, mId);
+            arguments.putString(Utils.ARG_NAME, mName);
+            arguments.putString(Utils.ARG_PAGE, mActivity);
+            FragmentList fragment = new FragmentList();
+            fragment.setArguments(arguments);
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.item_container, fragment)
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                    .commit();
+        }
 
         // connect view objects and xml ids
         AdView adView = (AdView) findViewById(R.id.adView);
@@ -85,9 +88,9 @@ public class ActivityList extends ActionBarActivity implements
     }
 
     @Override
-    public void onSelected(String selectedID, String selectedName) {
+    public void onSelected(String workoutId, String selectedName) {
         Intent detailIntent = new Intent(this, ActivityDetail.class);
-        detailIntent.putExtra(Utils.ARG_ID, selectedID);
+        detailIntent.putExtra(Utils.ARG_ID, workoutId);
         detailIntent.putExtra(Utils.ARG_NAME, selectedName);
         detailIntent.putExtra(Utils.ARG_PAGE, mActivity);
         startActivity(detailIntent.setClass(this, ActivityDetail.class));
@@ -100,7 +103,7 @@ public class ActivityList extends ActionBarActivity implements
         Intent detailIntent = new Intent(this, ActivityStopWatchAll.class);
         detailIntent.putExtra(Utils.ARG_ID, listId);
         detailIntent.putExtra(Utils.ARG_NAME, listName);
-
+        detailIntent.putExtra(Utils.ARG_TIME, listTime);
         startActivity(detailIntent.setClass(this, ActivityStopWatchAll.class));
         overridePendingTransition(R.anim.open_next, R.anim.close_main);
 
@@ -111,4 +114,45 @@ public class ActivityList extends ActionBarActivity implements
         super.onBackPressed();
         overridePendingTransition(R.anim.open_main, R.anim.close_next);
     }
+
+    // Check parent activity to call.
+    @Override
+    public Intent getSupportParentActivityIntent() {
+
+        if(mActivity.equals(Utils.ARG_WORKOUT)){
+            // Save default tab home
+            Utils.savePreferences(Utils.ARG_TAB_POSITION, 0, this);
+        } else {
+            // Save default tab home
+            Utils.savePreferences(Utils.ARG_TAB_POSITION, 1, this);
+        }
+
+
+        Intent newIntent=null;
+        try {
+            // Open parent activity.
+            newIntent = new Intent(this,Class.forName(getApplicationContext().getPackageName()+"."+Utils.ARG_ACTIVITY_LIST));
+
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return newIntent;
+    }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onResume() {
+        super.onResume();
+        Bundle arguments = new Bundle();
+        arguments.putString(Utils.ARG_ID, mId);
+        arguments.putString(Utils.ARG_NAME, mName);
+        arguments.putString(Utils.ARG_PAGE, mActivity);
+        FragmentList fragment = new FragmentList();
+        fragment.setArguments(arguments);
+        getSupportFragmentManager().beginTransaction()
+                .add(R.id.item_container, fragment)
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
+                .commit();
+    }
+
 }

@@ -8,9 +8,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.makeramen.RoundedImageView;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.squareup.picasso.Picasso;
@@ -68,8 +67,8 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder>
         viewHolder.txtTime.setText(ListTime.get(position));
 
         // set data to image view
-        int image = mContext.getResources().getIdentifier(ListImage.get(position), "drawable", mContext.getPackageName());
-
+        //int image = mContext.getResources().getIdentifier(ListImage.get(position), "drawable", mContext.getPackageName());
+        int image = mContext.getResources().getIdentifier("ic_dummy_image", "drawable", mContext.getPackageName());
         Picasso.with(mContext)
                 .load(image)
                 .into(viewHolder.imgThumbnail);
@@ -83,27 +82,27 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder>
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        private ImageView imgThumbnail;
+        private RoundedImageView imgThumbnail;
         private TextView txtTitle, txtTime;
 
         public ViewHolder(View v)
         {
             super(v);
             // connect views object with views id on xml
-            imgThumbnail  = (ImageView) v.findViewById(R.id.imgThumbnail);
+            imgThumbnail= (RoundedImageView) v.findViewById(R.id.imgThumbnail);
             txtTitle    = (TextView) v.findViewById(R.id.txtTitle);
-            txtTime     = (TextView) v.findViewById(R.id.txtTime);
+            txtTime     = (TextView) v.findViewById(R.id.txtSubTitle);
         }
     }
 
     public void updateList(
-            ArrayList<String> ListId,
+            ArrayList<String> ListWorkoutId,
             ArrayList<String> ListName,
             ArrayList<String> ListImage,
             ArrayList<String> ListTime)
     {
         this.ListId.clear();
-        this.ListId.addAll(ListId);
+        this.ListId.addAll(ListWorkoutId);
 
         this.ListName.clear();
         this.ListName.addAll(ListName);

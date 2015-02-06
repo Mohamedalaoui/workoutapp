@@ -24,6 +24,7 @@ import com.gc.materialdesign.views.ButtonFloat;
 import com.gc.materialdesign.views.ProgressBarCircularIndeterminate;
 import com.gc.materialdesign.widgets.SnackBar;
 import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.InterstitialAd;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.utils.DBHelperPrograms;
 import com.pongodev.dailyworkout.utils.DBHelperWorkouts;
@@ -42,19 +43,33 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
     // Declare view objects
     private ImageView imgThumbnail;
     private TextView  txtSteps;
+    private TextView txtSubtitle;
     private LinearLayout lytContent;
     private RelativeLayout lytNoResult;
-    private TextView lblToolbarSubtext;
 
     // String to save data from activityHome
-    private String mName, mSteps, mTime, mImage, mId, mActivity;
-    private int mSelectedDay;
+    private String mName, mSteps, mTime, mImage, mWorkoutId, mActivity, mProgramId;
+    private int mSelectedDay=0;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_detail, menu);
         return true;
+    }
+
+    // Configuration in Android API 21 to set window to full screen.
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+            if (hasFocus) {
+                getWindow().getDecorView()
+                        .setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+            }
+        }
     }
 
     @Override
@@ -64,42 +79,44 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
 
         // Intent i= getIntent().getExtras();
         if (getIntent().getExtras() != null) {
-            Intent i=getIntent();
-            mId         = i.getStringExtra(Utils.ARG_ID);
+            Intent i    = getIntent();
+            mWorkoutId  = i.getStringExtra(Utils.ARG_ID);
             mName       = i.getStringExtra(Utils.ARG_NAME);
             mActivity   = i.getStringExtra(Utils.ARG_PAGE);
 
-            Utils.saveString(Utils.ARG_ID, mId, this);
+            Utils.saveString(Utils.ARG_ID, mWorkoutId, this);
             Utils.saveString(Utils.ARG_NAME, mName, this);
             Utils.saveString(Utils.ARG_PAGE, mActivity, this);
+
         } else {
-            mId       = Utils.loadString(Utils.ARG_ID, this);
+            mWorkoutId= Utils.loadString(Utils.ARG_ID, this);
             mName     = Utils.loadString(Utils.ARG_NAME, this);
             mActivity = Utils.loadString(Utils.ARG_PAGE, this);
         }
 
-
         // connect view objects and xml ids
-        AdView adView = (AdView) findViewById(R.id.adView);
+        AdView adView       = (AdView) findViewById(R.id.adView);
         lytContent          = (LinearLayout) findViewById(R.id.lytContent);
         lytNoResult         = (RelativeLayout) findViewById(R.id.lytNoResult);
         txtSteps            = (TextView) findViewById(R.id.txtSteps);
-        ButtonFloat btnStart = (ButtonFloat) findViewById(R.id.btnStart);
-        ButtonFloat btnAdd = (ButtonFloat) findViewById(R.id.btnAdd);
+        TextView txtTitle   = (TextView) findViewById(R.id.txtTitle);
+        txtSubtitle         = (TextView) findViewById(R.id.txtSubTitle);
+        ButtonFloat btnStart= (ButtonFloat) findViewById(R.id.btnStart);
+        ButtonFloat btnAdd  = (ButtonFloat) findViewById(R.id.btnAdd);
         prgLoading          = (ProgressBarCircularIndeterminate) findViewById(R.id.prgLoading);
+        imgThumbnail        = (ImageView)findViewById(R.id.imgThumbnail);
 
-        imgThumbnail            = (ImageView)findViewById(R.id.imgThumbnail);
-        TextView lblToolbarText = (TextView) findViewById(R.id.lblToolbarText);
-        lblToolbarSubtext       = (TextView) findViewById(R.id.lblToolbarSubtext);
+        // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        lblToolbarText.setText(mName);
+        txtTitle.setText(mName);
 
-        String activePage = Utils.ARG_WORKOUT;
-        if(activePage.equals(Utils.ARG_WORKOUT)){
-            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_add));
+        if(mActivity.equals(Utils.ARG_WORKOUT)){
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_add_36dp));
         } else {
-            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_remove));
+            btnAdd.setIconDrawable(getResources().getDrawable(R.drawable.ic_clear_36dp));
         }
 
         setSupportActionBar(toolbar);
@@ -108,9 +125,21 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         btnStart.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
 
+        // Check ad visibility. If visible, display ad banner and interstitial.
+        InterstitialAd interstitialAd = new InterstitialAd(this);
         boolean isAdmobVisible = Utils.admobVisibility(adView, Utils.ARG_ADMOB_VISIBILITY);
-        if(isAdmobVisible)
+        if(isAdmobVisible) {
             Utils.loadAdmob(adView);
+
+            // When interstitialTrigger equals ARG_TRIGGER_VALUE, display interstitial ad.
+            int interstitialTrigger = Utils.loadPreferences(Utils.ARG_TRIGGER, this);
+            if(interstitialTrigger == Utils.ARG_TRIGGER_VALUE) {
+                Utils.loadAdmobInterstitial(interstitialAd, this);
+                Utils.savePreferences(Utils.ARG_TRIGGER, 0, this);
+            }else{
+                Utils.savePreferences(Utils.ARG_TRIGGER, (interstitialTrigger+1), this);
+            }
+        }
 
         // call asynctask class to get data from database
         new getDataList().execute();
@@ -164,10 +193,10 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
 
 
             if(!data.isEmpty()){
-                lblToolbarSubtext.setText(mTime);
+                txtSubtitle.setText(mTime);
                 txtSteps.setText(mSteps);
-                int image = getResources().getIdentifier(mImage, "drawable", getPackageName());
-
+                //int image = getResources().getIdentifier(mImage, "drawable", getPackageName());
+                int image = getResources().getIdentifier("ic_dummy_image", "drawable", getPackageName());
                 Picasso.with(getApplicationContext())
                         .load(image)
                         .into(imgThumbnail);
@@ -207,21 +236,29 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
             prgLoading.setVisibility(View.GONE);
             new SnackBar(ActivityDetail.this,
                     getString(R.string.success_discard)).show();
-            finish();
 
         }
     }
 
     // Method to fetch data from database
     public void getDataFromDatabase() {
-        // Check database
+
+        if(mActivity.equals(Utils.ARG_PROGRAM)){
+            mProgramId = mWorkoutId;
+            // Check Program database
+            DBHelperPrograms dbPrograms = new DBHelperPrograms(this);
+            dbPrograms.checkDBPrograms();
+            mWorkoutId = dbPrograms.getWorkoutId(mWorkoutId);
+            dbPrograms.close();
+        }
+
+        // Check Workout database
         DBHelperWorkouts dbWorkouts = new DBHelperWorkouts(this);
         dbWorkouts.checkDBWorkouts();
-
-        data = dbWorkouts.getDetail(mId);
+        data = dbWorkouts.getDetail(mWorkoutId);
 
         if(!data.isEmpty()){
-            mId     = data.get(0).toString();
+            mWorkoutId     = data.get(0).toString();
             mName   = data.get(1).toString();
             mImage  = data.get(2).toString();
             mTime   = data.get(3).toString();
@@ -236,7 +273,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         // Check database
         dbPrograms = new DBHelperPrograms(getApplicationContext());
         dbPrograms.checkDBPrograms();
-        dbPrograms.deleteData(mId);
+        dbPrograms.deleteData(mProgramId);
         dbPrograms.close();
     }
 
@@ -275,11 +312,11 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
                 String[] day_name = getResources().getStringArray(R.array.day_name);
 
                 // check if data already available in this day program
-                boolean isAvailable = dbPrograms.isDataAvailable(mSelectedDay, Integer.valueOf(mId));
+                boolean isAvailable = dbPrograms.isDataAvailable(mSelectedDay, Integer.valueOf(mWorkoutId));
 
                 // if data is not available add data to this day program, otherwise, show toast message
                 if(!isAvailable){
-                    dbPrograms.addData(Integer.valueOf(mId), mName, mSelectedDay, mImage, mTime, mSteps);
+                    dbPrograms.addData(Integer.valueOf(mWorkoutId), mName, mSelectedDay, mImage, mTime, mSteps);
                     new SnackBar(ActivityDetail.this,
                             getString(R.string.success_add)+" "+day_name[mSelectedDay]).show();
 
@@ -288,12 +325,18 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
                             getString(R.string.failed_add)+" "+day_name[mSelectedDay]).show();
                 }
                 dbPrograms.close();
+
+                // Setting mSelectedDay to default
+                mSelectedDay=0;
             }
         });
         // set negative button
         builder.setNegativeButton(negative, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int id) {
+                // Setting mSelectedDay to default
+                mSelectedDay=0;
+
                 // close update dialog if cancel button clicked
                 dialog.dismiss();
             }
@@ -302,6 +345,9 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         // show dialog
         AlertDialog alert = builder.create();
         alert.show();
+
+        // Setting mSelectedDay to default
+        mSelectedDay=0;
     }
 
     private Intent createShareIntent() {
@@ -329,7 +375,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         switch (v.getId()){
             case R.id.btnStart:
                 Intent i = new Intent(getApplicationContext(), ActivityStopWatch.class);
-                i.putExtra(Utils.ARG_ID, mId);
+                i.putExtra(Utils.ARG_ID, mWorkoutId);
                 i.putExtra(Utils.ARG_NAME, mName);
                 i.putExtra(Utils.ARG_TIME, mTime);
                 startActivity(i);

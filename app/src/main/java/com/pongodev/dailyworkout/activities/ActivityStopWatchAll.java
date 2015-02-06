@@ -74,7 +74,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_stopwatch_all);
+        setContentView(R.layout.activity_stopwatch);
 
         ctx = this;
 
@@ -85,15 +85,15 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
         mListTime  = i.getStringArrayListExtra(Utils.ARG_TIME);
 
         // connect views object and views id on xml
-        txtTitle = (TextSwitcher) findViewById(R.id.txtTitle);
-        txtNextName =(TextView) findViewById(R.id.txtNextName);
-        txtTimer = (TextView) findViewById(R.id.txtTimer);
-        txtTimerRest = (TextView) findViewById(R.id.txtTimerRest);
-        btnStart = (ButtonFloat) findViewById(R.id.btnStart);
-        btnSound = (ButtonFloat) findViewById(R.id.btnSound);
-        btnReset = (ButtonFlat) findViewById(R.id.btnReset);
-        flipper  = (ViewFlipper) findViewById(R.id.flipper);
-        lytRest  = (RelativeLayout) findViewById(R.id.lytRest);
+        txtTitle    = (TextSwitcher) findViewById(R.id.txtTitle);
+        txtNextName = (TextView) findViewById(R.id.txtNextName);
+        txtTimer    = (TextView) findViewById(R.id.txtTimer);
+        txtTimerRest= (TextView) findViewById(R.id.txtTimerRest);
+        btnStart    = (ButtonFloat) findViewById(R.id.btnStart);
+        btnSound    = (ButtonFloat) findViewById(R.id.btnSound);
+        btnReset    = (ButtonFlat) findViewById(R.id.btnReset);
+        flipper     = (ViewFlipper) findViewById(R.id.flipper);
+        lytRest     = (RelativeLayout) findViewById(R.id.lytRest);
 
         btnStart.setOnClickListener(this);
         btnReset.setOnClickListener(this);
@@ -111,7 +111,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 TextView myText = new TextView(ActivityStopWatchAll.this);
                 myText.setGravity(Gravity.CENTER_HORIZONTAL);
                 myText.setTypeface(null, Typeface.BOLD);
-                myText.setTextSize(24);
+                myText.setTextSize(getResources().getDimension(R.dimen.text_title_stopwatch));
                 myText.setTextColor(getResources().getColor(R.color.color_primary));
                 return myText;
             }
@@ -132,10 +132,11 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
         // get PowerManager to keep screen on
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "SCREEN ON");
+        wl.acquire();
 
         // Setting default timer and button start icon
         timer = new CounterClass(3000,1000);
-        btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play));
+        btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
 
         // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -144,9 +145,9 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
 
         // Condition for sound (1 = on, 0 = off)
         if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
-            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_muted));
+            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
         } else {
-            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_on));
+            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
         }
 
         //set the animation of the slideshow
@@ -179,7 +180,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
         @Override
         protected void onPreExecute() {
             // TODO Auto-generated method stub
-
+            btnStart.setEnabled(true);
         }
 
         @Override
@@ -205,8 +206,9 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 txtTitle.setText(mCurrenntWorkout+"/"+ mListName.size()+"  "+ mListName.get(paramData-1));
                 wl.acquire();
                 FLAG = true;
-                btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
                 btnReset.setEnabled(false);
+                btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
                 flipper.removeAllViews();
                 paramRest=true;
                 startTimer((mListTime.get(paramData-1)));
@@ -220,7 +222,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 fl.setLayoutParams(lp);
 
                 ImageView imgWorkout = new ImageView(ActivityStopWatchAll.this);
-                imgWorkout.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imgWorkout.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                 int imagedata = getResources().getIdentifier(Images.get(i), "drawable", getPackageName());
                 imgWorkout.setImageResource(imagedata);
 
@@ -231,7 +233,6 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 flipper.addView(fl);
 
             }
-
         }
     }
 
@@ -251,7 +252,6 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
             Images.add(row.get(0).toString());
         }
         dbWorkouts.close();
-
     }
 
     // Configuration in Android API 21 to set window to full screen.
@@ -311,7 +311,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
             } else {
                 new MaterialDialog.Builder(ctx)
                         .title(R.string.dialog_title)
-                        .content(R.string.dialog_content)
+                        .content(R.string.dialog_all_exercises)
                         .positiveText(R.string.dialog_button_positif)
                         .positiveColorRes(R.color.color_primary)
                         .titleGravity(GravityEnum.CENTER)
@@ -331,8 +331,6 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                         })
                         .show();
             }
-
-
         }
 
         @Override
@@ -350,9 +348,6 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                     }
                     mp.start();
                 }
-
-
-
                 paramAlert+=1;
             }
 
@@ -413,19 +408,20 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 if(!FLAG){
                     if(!flipper.isFlipping()) flipper.startFlipping();
                     wl.acquire();
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
                     FLAG = true;
 
                     // Condition from pause and play again
                     if(paramPause){
                         timer.cancel();
                         startTimer(currentTime);
-
-                        // Condition from beginning
+                    // Condition from beginning
                     } else {
-                        startTimer((mListTime.get(paramData)));
-                        btnReset.setEnabled(false);
+                        startTimer((mListTime.get(paramData-1)));
                     }
+
+                    btnReset.setEnabled(false);
+                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
 
                     // Condition when button pause push
                 } else {
@@ -433,8 +429,9 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                     wl.release();
                     FLAG = false;
                     paramPause = true;
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play));
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
                     btnReset.setEnabled(true);
+                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_enable));
                     timer.cancel();
                     currentTime = timer.timerPause();
                     txtTimer.setText(currentTime);
@@ -446,7 +443,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 // TODO Auto-generated method stub
                 paramPause = false;
                 timer.cancel();
-                txtTimer.setText((mListTime.get(paramData)));
+                txtTimer.setText((mListTime.get(paramData-1)));
 
                 break;
 
@@ -455,12 +452,12 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 // Condition for sound (1 = on, 0 = off)
                 if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
                     am.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_on));
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
                     Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_ON, this);
 
                 } else {
                     am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_muted));
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
                     Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_OFF, this);
                 }
 

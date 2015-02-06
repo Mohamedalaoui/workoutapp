@@ -74,7 +74,8 @@ public class AdapterWorkouts extends RecyclerView.Adapter<AdapterWorkouts.ViewHo
         }
 
         // set data to image view
-        int image = mContext.getResources().getIdentifier(workoutImages.get(position), "drawable", mContext.getPackageName());
+        //int image = mContext.getResources().getIdentifier(workoutImages.get(position), "drawable", mContext.getPackageName());
+        int image = mContext.getResources().getIdentifier("ic_dummy_image", "drawable", mContext.getPackageName());
 
         Picasso.with(mContext)
                 .load(image)
@@ -97,9 +98,9 @@ public class AdapterWorkouts extends RecyclerView.Adapter<AdapterWorkouts.ViewHo
         {
             super(v);
             // connect views object with views id on xml
-            imgCategory = (ImageView) v.findViewById(R.id.imgCategory);
+            imgCategory = (ImageView) v.findViewById(R.id.imgThumbnail);
             txtTitle = (TextView) v.findViewById(R.id.txtTitle);
-            txtTotal = (TextView) v.findViewById(R.id.txtTotal);
+            txtTotal = (TextView) v.findViewById(R.id.txtSubTitle);
         }
     }
 

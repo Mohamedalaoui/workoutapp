@@ -13,7 +13,6 @@ import android.view.WindowManager;
 
 import com.pongodev.dailyworkout.R;
 
-
 public class ActivitySplash extends ActionBarActivity {
 
     // Create variable to handle progress and set it to 0.
@@ -33,7 +32,7 @@ public class ActivitySplash extends ActionBarActivity {
         new Loading().execute();
     }
 
-    public class Loading extends AsyncTask<Void, Void, Void> {
+    public class Loading extends AsyncTask<Void, Void, Void>{
 
         @Override
         protected Void doInBackground(Void... voids) {

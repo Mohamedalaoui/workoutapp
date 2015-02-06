@@ -6,6 +6,7 @@ package com.pongodev.dailyworkout.activities;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
@@ -15,14 +16,17 @@ import android.os.PowerManager;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.DisplayMetrics;
+import android.view.Gravity;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import android.widget.ViewSwitcher;
 
 import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -38,7 +42,8 @@ import java.util.concurrent.TimeUnit;
 public class ActivityStopWatch extends ActionBarActivity implements View.OnClickListener{
 
     // create object of views
-    private TextView txtTimer, txtTitle;
+    private TextView txtTimer;
+    private TextSwitcher txtTitle;
     private ButtonFlat btnReset;
     private ButtonFloat btnStart, btnSound;
     private ViewFlipper flipper;
@@ -47,15 +52,15 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     // create object of WakeLock class
     private PowerManager.WakeLock wl;
     private Context ctx;
-    private  CounterClass timer = null;
+    private CounterClass timer = null;
 
     // set variables as FLAGs
     private boolean FLAG = false;
     private boolean paramPause = false;
 
-    // create variable to store data
-    private String mId, mName, mTime;
-    private ArrayList<String> Images = new ArrayList<String>();
+    private String mName;
+    private String mTime;
+    private ArrayList<String> Images = new ArrayList<>();
     private String currentTime ="00:00";
 
     @Override
@@ -66,13 +71,12 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         ctx = this;
 
         // get values that passed from previous page
-        Intent i= getIntent();
-        mId     = i.getStringExtra(Utils.ARG_ID);
-        mName   = i.getStringExtra(Utils.ARG_NAME);
-        mTime   = i.getStringExtra(Utils.ARG_TIME);
+        Intent i    = getIntent();
+        mName       = i.getStringExtra(Utils.ARG_NAME);
+        mTime       = i.getStringExtra(Utils.ARG_TIME);
 
         // connect views object and views id on xml
-        txtTitle = (TextView) findViewById(R.id.txtTitle);
+        txtTitle = (TextSwitcher) findViewById(R.id.txtTitle);
         txtTimer = (TextView) findViewById(R.id.txtTimer);
         btnStart = (ButtonFloat) findViewById(R.id.btnStart);
         btnSound = (ButtonFloat) findViewById(R.id.btnSound);
@@ -83,7 +87,27 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         btnReset.setOnClickListener(this);
         btnSound.setOnClickListener(this);
 
+        // Setting button reset disable in the beginning
+        btnReset.setEnabled(false);
+        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
+
         txtTimer.setText(mTime);
+
+        // Customization Title text
+        // Set the ViewFactory of the TextSwitcher that will create TextView object when asked
+        txtTitle.setFactory(new ViewSwitcher.ViewFactory() {
+
+            public View makeView() {
+                // TODO Auto-generated method stub
+                // create new textView and set the properties like clolr, size etc
+                TextView myText = new TextView(ActivityStopWatch.this);
+                myText.setGravity(Gravity.CENTER_HORIZONTAL);
+                myText.setTypeface(null, Typeface.BOLD);
+                myText.setTextSize(getResources().getDimension(R.dimen.text_title_stopwatch));
+                myText.setTextColor(getResources().getColor(R.color.color_primary));
+                return myText;
+            }
+        });
 
         // Setting default volume
         am = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
@@ -95,7 +119,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
         // Setting default timer and button start icon
         timer = new CounterClass(3000,1000);
-        btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play));
+        btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
 
         // Set up the toolbar.
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -104,9 +128,9 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
         // Condition for sound (1 = on, 0 = off)
         if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
-            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_muted));
+            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
         } else {
-            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_on));
+            btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
         }
 
         //set the animation of the slideshow
@@ -173,14 +197,14 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
             for(int i=0;i<Images.size();i++){
                 FrameLayout fl = new FrameLayout(ActivityStopWatch.this);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(screenWidth, screenHeight);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
+
                 fl.setLayoutParams(lp);
 
                 ImageView imgWorkout = new ImageView(ActivityStopWatch.this);
-                imgWorkout.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                imgWorkout.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 int imagedata = getResources().getIdentifier(Images.get(i), "drawable", getPackageName());
                 imgWorkout.setImageResource(imagedata);
-
                 fl.addView(imgWorkout, new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
@@ -196,17 +220,17 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         DBHelperWorkouts dbWorkouts = new DBHelperWorkouts(getApplicationContext());
         dbWorkouts.checkDBWorkouts();
 
-        ArrayList<ArrayList<Object>> data = dbWorkouts.getImages(mId);
-
         // Clear array
         Images.clear();
 
         // store data to arraylist variable
-        for(int i=0;i< data.size();i++){
-            ArrayList<Object> row = data.get(i);
+        //for(int i=0;i< data.size();i++){
+          //  ArrayList<Object> row = data.get(i);
 
-            Images.add(row.get(0).toString());
-        }
+            //Images.add(row.get(0).toString());
+        //}
+        Images.add("ic_dummy_image");
+        Images.add("ic_dummy_image_2");
         dbWorkouts.close();
     }
 
@@ -233,15 +257,18 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                 if(!FLAG){
                     if(!flipper.isFlipping()) flipper.startFlipping();
                     wl.acquire();
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause));
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
                     FLAG = true;
                     if(paramPause){
                         timer.cancel();
                         startTimer(currentTime);
+                        btnReset.setEnabled(false);
+                        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
 
                     } else {
                         startTimer(mTime);
                         btnReset.setEnabled(false);
+                        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
                     }
 
                 // Condition when button pause push
@@ -250,8 +277,9 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                     wl.release();
                     FLAG = false;
                     paramPause = true;
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play));
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
                     btnReset.setEnabled(true);
+                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_enable));
                     timer.cancel();
                     currentTime = timer.timerPause();
                     txtTimer.setText(currentTime);
@@ -272,12 +300,12 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
                 // Condition for sound (1 = on, 0 = off)
                 if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
                     am.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_on));
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
                     Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_ON, this);
 
                 } else {
                     am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_muted));
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
                     Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_OFF, this);
                 }
 
@@ -317,7 +345,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
             new MaterialDialog.Builder(ctx)
                     .title(R.string.dialog_title)
-                    .content(R.string.dialog_content)
+                    .content(R.string.dialog_exercise)
                     .positiveText(R.string.dialog_button_positif)
                     .positiveColorRes(R.color.color_primary)
                     .titleGravity(GravityEnum.CENTER)
@@ -379,6 +407,16 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         wl.acquire();
 
     }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(timer.timerCheck())timer.cancel();
+        wl.acquire();
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {
@@ -389,5 +427,3 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     }
 
 }
-
-

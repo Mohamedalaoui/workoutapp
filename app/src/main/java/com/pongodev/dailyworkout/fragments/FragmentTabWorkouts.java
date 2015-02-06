@@ -19,7 +19,6 @@ import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.adapters.AdapterWorkouts;
 import com.pongodev.dailyworkout.listeners.OnTapListener;
 import com.pongodev.dailyworkout.utils.DBHelperWorkouts;
-import com.pongodev.dailyworkout.utils.Utils;
 
 import java.util.ArrayList;
 

@@ -24,13 +24,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activities.MainActivity"
-            android:screenOrientation="portrait" >
-        </activity>
+
         <activity
             android:name=".activities.ActivityHome"
-            android:label="@string/title_activity_home"
+            android:label="@string/app_name"
             android:screenOrientation="portrait">
         </activity>
 
@@ -39,13 +36,21 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityHome">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ActivityHome" />
         </activity>
 
         <activity
             android:name=".activities.ActivityDetail"
-            android:label="@string/app_name"
+            android:label=""
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityList">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ActivityList" />
         </activity>
 
         <activity
@@ -53,6 +58,10 @@
             android:label=""
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityDetail">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ActivityDetail" />
         </activity>
 
         <activity
@@ -60,6 +69,10 @@
             android:label=""
             android:screenOrientation="portrait"
             android:parentActivityName=".activities.ActivityDetail">
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activities.ActivityDetail" />
         </activity>
 
         <activity

@@ -25,11 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
+        android:layout_marginRight="@dimen/padding_main"
+        android:layout_marginBottom="@dimen/padding_main"
         android:visibility="gone"
         android:background="@color/color_primary"
-        materialdesign:iconDrawable="@drawable/ic_play" />
+        materialdesign:iconDrawable="@drawable/ic_play_36dp" />
 
     <TextView
         android:id="@+id/lblNoResult"

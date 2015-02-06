@@ -23,7 +23,8 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
 
 
     // application package to store database
-    private static String DB_PATH = "/data/data/com.pongodev.dailyworkout/databases/";
+    private static String DB_PATH = Utils.ARG_DATABASE_PATH;
+
 
     final static String DB_NAME = "db_programs";
     public final static int DB_VERSION = 1;
@@ -252,6 +253,34 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
             Log.e("DB ERROR", e.toString());
             e.printStackTrace();
         }
+    }
+
+    // method to get location data from database
+    public String getWorkoutId(String programID){
+
+        String workoutId = "0";
+        Cursor cursor;
+
+        try{
+            cursor = db.query(
+                    TABLE_PROGRAMS,
+                    new String[] {PROGRAM_WORKOUT_ID},
+                    PROGRAM_ID + " = " + programID,
+                    null, null, null, null, null);
+
+            if (cursor != null) cursor.moveToFirst();
+
+            workoutId = cursor.getString(0);
+
+            cursor.close();
+        }
+        catch (SQLException e)
+        {
+            Log.e("DB ERROR", e.toString());
+            e.printStackTrace();
+        }
+
+        return workoutId;
     }
 
     public void checkDBPrograms() {

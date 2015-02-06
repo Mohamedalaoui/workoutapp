@@ -59,7 +59,9 @@ public class ActivityHome extends ActionBarActivity implements
       The {@link ViewPager} that will host the section contents.
      */
         ViewPager mViewPager = (ViewPager) findViewById(R.id.pager);
+
         mViewPager.setAdapter(adapter);
+        mViewPager.setCurrentItem(Utils.loadPreferences(Utils.ARG_TAB_POSITION, this));
 
         // Bind the tabs to the ViewPager
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
@@ -75,6 +77,8 @@ public class ActivityHome extends ActionBarActivity implements
         boolean isAdmobVisible = Utils.admobVisibility(adView, Utils.ARG_ADMOB_VISIBILITY);
         if(isAdmobVisible)
             Utils.loadAdmob(adView);
+
+        toolbar.setLogo(getResources().getDrawable(R.drawable.ic_logo));
 
         // Handle item menu in toolbar.
         toolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
@@ -95,21 +99,6 @@ public class ActivityHome extends ActionBarActivity implements
 
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     // Method from FragmentTabsWorkouts to open workout list page
     @Override
     public void onSelected(String selectedID, String workoutName) {
@@ -121,7 +110,7 @@ public class ActivityHome extends ActionBarActivity implements
         overridePendingTransition(R.anim.open_next, R.anim.close_main);
     }
 
-    // Method from FragmentTabsPrograms to open workout list page
+    // Method from FragmentTabsPrograms to open programs list page
     @Override
     public void onSelectedDay(String selectedID, String dayName) {
         Intent detailIntent = new Intent(this, ActivityList.class);
@@ -130,6 +119,22 @@ public class ActivityHome extends ActionBarActivity implements
         detailIntent.putExtra(Utils.ARG_PAGE, Utils.ARG_PROGRAM);
         startActivity(detailIntent.setClass(this, ActivityList.class));
         overridePendingTransition(R.anim.open_next, R.anim.close_main);
+    }
+
+    /** Called before the activity is destroyed */
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Utils.savePreferences(Utils.ARG_TAB_POSITION, 0, this);
+
+    }
+
+    /** Called before the activity is stoped */
+    @Override
+    public void onStop() {
+        super.onStop();
+        Utils.savePreferences(Utils.ARG_TAB_POSITION, 0, this);
+
     }
 
 }
