@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="bottom"
-                        android:padding="@dimen/padding_gradient"
+                        android:padding="@dimen/padding_main"
                         android:background="@drawable/gradient_transparent_background">
                         <TextView
                             android:id="@+id/txtTitle"
@@ -60,7 +60,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/text_subtitle_detail_size"
-                            android:textColor="@color/text_row_subtitle_color"/>
+                            android:textColor="@color/text_title_detail"/>
                     </LinearLayout>
                 </FrameLayout>
 

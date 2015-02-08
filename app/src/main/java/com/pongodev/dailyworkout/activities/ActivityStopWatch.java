@@ -89,7 +89,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
         // Setting button reset disable in the beginning
         btnReset.setEnabled(false);
-        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
+        btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
 
         txtTimer.setText(mTime);
 
@@ -248,75 +248,6 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btnStart:
-                // TODO Auto-generated method stub
-                // Condition when button start push
-                if(!FLAG){
-                    if(!flipper.isFlipping()) flipper.startFlipping();
-                    wl.acquire();
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
-                    FLAG = true;
-                    if(paramPause){
-                        timer.cancel();
-                        startTimer(currentTime);
-                        btnReset.setEnabled(false);
-                        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
-
-                    } else {
-                        startTimer(mTime);
-                        btnReset.setEnabled(false);
-                        btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
-                    }
-
-                // Condition when button pause push
-                } else {
-                    if(flipper.isFlipping()) flipper.stopFlipping();
-                    wl.release();
-                    FLAG = false;
-                    paramPause = true;
-                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
-                    btnReset.setEnabled(true);
-                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_enable));
-                    timer.cancel();
-                    currentTime = timer.timerPause();
-                    txtTimer.setText(currentTime);
-
-                }
-                break;
-
-            case R.id.btnReset:
-                // TODO Auto-generated method stub
-                paramPause = false;
-                timer.cancel();
-                txtTimer.setText(mTime);
-
-                break;
-
-            case R.id.btnSound:
-                // TODO Auto-generated method stub
-                // Condition for sound (1 = on, 0 = off)
-                if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
-                    Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_ON, this);
-
-                } else {
-                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
-                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
-                    Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_OFF, this);
-                }
-
-                break;
-
-
-            default:
-                break;
-        }
-    }
-
     private void startTimer(String time){
         String[] splitTime = time.split(":");
 
@@ -343,6 +274,11 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
             isRunning = false;
             txtTimer.setText(getResources().getString(R.string.initial_time));
 
+            btnStart.setEnabled(false);
+            btnReset.setEnabled(false);
+            btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
+            btnStart.setBackgroundColor(getResources().getColor(R.color.btn_disable));
+            
             new MaterialDialog.Builder(ctx)
                     .title(R.string.dialog_title)
                     .content(R.string.dialog_exercise)
@@ -426,4 +362,73 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         return (super.onOptionsItemSelected(menuItem));
     }
 
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btnStart:
+                // TODO Auto-generated method stub
+                // Condition when button start push
+                if(!FLAG){
+                    if(!flipper.isFlipping()) flipper.startFlipping();
+                    wl.acquire();
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
+                    FLAG = true;
+                    if(paramPause){
+                        timer.cancel();
+                        startTimer(currentTime);
+                        btnReset.setEnabled(false);
+                        btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
+
+                    } else {
+                        startTimer(mTime);
+                        btnReset.setEnabled(false);
+                        btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
+                    }
+
+                    // Condition when button pause push
+                } else {
+                    if(flipper.isFlipping()) flipper.stopFlipping();
+                    wl.release();
+                    FLAG = false;
+                    paramPause = true;
+                    btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
+                    btnReset.setEnabled(true);
+                    btnReset.setTextColor(getResources().getColor(R.color.btn_enable));
+                    timer.cancel();
+                    currentTime = timer.timerPause();
+                    txtTimer.setText(currentTime);
+
+                }
+                break;
+
+            case R.id.btnReset:
+                // TODO Auto-generated method stub
+                paramPause = false;
+                timer.cancel();
+                txtTimer.setText(mTime);
+
+                break;
+
+            case R.id.btnSound:
+                // TODO Auto-generated method stub
+                // Condition for sound (1 = on, 0 = off)
+                if(Utils.loadPreferences(Utils.ARG_SOUND, this)==Utils.ARG_SOUND_OFF){
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 7, 0);
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_up_36dp));
+                    Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_ON, this);
+
+                } else {
+                    am.setStreamVolume(AudioManager.STREAM_MUSIC, 0, 0);
+                    btnSound.setIconDrawable(getResources().getDrawable(R.drawable.ic_volume_off_36dp));
+                    Utils.savePreferences(Utils.ARG_SOUND, Utils.ARG_SOUND_OFF, this);
+                }
+
+                break;
+
+
+            default:
+                break;
+        }
+    }
 }

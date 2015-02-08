@@ -208,7 +208,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                 FLAG = true;
                 btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_pause_36dp));
                 btnReset.setEnabled(false);
-                btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
+                btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
                 flipper.removeAllViews();
                 paramRest=true;
                 startTimer((mListTime.get(paramData-1)));
@@ -309,6 +309,12 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
 
             // Condition when no next data
             } else {
+
+                btnStart.setEnabled(false);
+                btnReset.setEnabled(false);
+                btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
+                btnStart.setBackgroundColor(getResources().getColor(R.color.btn_disable));
+                
                 new MaterialDialog.Builder(ctx)
                         .title(R.string.dialog_title)
                         .content(R.string.dialog_all_exercises)
@@ -421,7 +427,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                     }
 
                     btnReset.setEnabled(false);
-                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_disable));
+                    btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
 
                     // Condition when button pause push
                 } else {
@@ -431,7 +437,7 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
                     paramPause = true;
                     btnStart.setIconDrawable(getResources().getDrawable(R.drawable.ic_play_36dp));
                     btnReset.setEnabled(true);
-                    btnReset.setTextColor(getResources().getColor(R.color.btnflat_enable));
+                    btnReset.setTextColor(getResources().getColor(R.color.btn_enable));
                     timer.cancel();
                     currentTime = timer.timerPause();
                     txtTimer.setText(currentTime);

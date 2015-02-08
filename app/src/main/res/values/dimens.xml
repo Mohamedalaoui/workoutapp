@@ -6,7 +6,7 @@
     <!-- Padding -->
     <dimen name="padding_content_adapter">16dp</dimen>
     <dimen name="padding_main">16dp</dimen>
-    <dimen name="padding_gradient">20dp</dimen>
+    <dimen name="padding_gradient">13dp</dimen>
     <dimen name="padding_content_bottom">15dp</dimen>
     <dimen name="row_padding">16dp</dimen>
     <dimen name="padding_top">30dp</dimen>

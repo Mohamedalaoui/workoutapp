@@ -15,8 +15,8 @@
     <color name="divider_color">#CCCCCC</color>
 
     <!-- Button -->
-    <color name="btnflat_disable">#40000000</color>
-    <color name="btnflat_enable">#1E88E5</color>
+    <color name="btn_disable">#40000000</color>
+    <color name="btn_enable">#1E88E5</color>
 
 
     <!--Text -->
