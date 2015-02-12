@@ -134,7 +134,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             }
             cursor.close();
         }catch (SQLException e){
-            Log.e("DB Error", e.toString());
+            Log.e("DB getAllCategories", e.toString());
             e.printStackTrace();
         }
 
@@ -180,7 +180,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             }
             cursor.close();
         }catch (SQLException e){
-            Log.e("DB Error", e.toString());
+            Log.e("WorkoutListByCategory", e.toString());
             e.printStackTrace();
         }
 
@@ -218,7 +218,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
         }
         catch (SQLException e)
         {
-            Log.e("DB ERROR", e.toString());
+            Log.e("DB getDetail", e.toString());
             e.printStackTrace();
         }
 
@@ -253,7 +253,7 @@ public class DBHelperWorkouts extends SQLiteOpenHelper {
             }
             cursor.close();
         }catch (SQLException e){
-            Log.e("DB Error", e.toString());
+            Log.e("DB getImages", e.toString());
             e.printStackTrace();
         }
 

@@ -58,7 +58,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     private boolean FLAG = false;
     private boolean paramPause = false;
 
-    private String mName;
+    private String mName, mId;
     private String mTime;
     private ArrayList<String> Images = new ArrayList<>();
     private String currentTime ="00:00";
@@ -72,6 +72,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
         // get values that passed from previous page
         Intent i    = getIntent();
+        mId         = i.getStringExtra(Utils.ARG_ID);
         mName       = i.getStringExtra(Utils.ARG_NAME);
         mTime       = i.getStringExtra(Utils.ARG_TIME);
 
@@ -116,6 +117,7 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         // get PowerManager to keep screen on
         PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
         wl = pm.newWakeLock(PowerManager.SCREEN_DIM_WAKE_LOCK, "SCREEN ON");
+        wl.acquire();
 
         // Setting default timer and button start icon
         timer = new CounterClass(3000,1000);
@@ -192,12 +194,11 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
 
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
-            int screenWidth = dm.widthPixels;
-            int screenHeight = screenWidth / 2 + 50;
+
 
             for(int i=0;i<Images.size();i++){
                 FrameLayout fl = new FrameLayout(ActivityStopWatch.this);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 600);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.thumb_flipper_hight));
 
                 fl.setLayoutParams(lp);
 
@@ -223,14 +224,15 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
         // Clear array
         Images.clear();
 
-        // store data to arraylist variable
-        //for(int i=0;i< data.size();i++){
-          //  ArrayList<Object> row = data.get(i);
+        ArrayList<ArrayList<Object>> data = dbWorkouts.getImages(mId);
 
-            //Images.add(row.get(0).toString());
-        //}
-        Images.add("ic_dummy_image");
-        Images.add("ic_dummy_image_2");
+        // store data to arraylist variable
+        for(int i=0;i< data.size();i++){
+            ArrayList<Object> row = data.get(i);
+
+            Images.add(row.get(0).toString());
+        }
+
         dbWorkouts.close();
     }
 
@@ -340,7 +342,10 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     public void onDestroy() {
         super.onDestroy();
         if(timer.timerCheck())timer.cancel();
-        wl.acquire();
+        if (wl != null) {
+            wl.release();
+            wl=null;
+        }
 
     }
 
@@ -349,8 +354,10 @@ public class ActivityStopWatch extends ActionBarActivity implements View.OnClick
     public void onStop() {
         super.onStop();
         if(timer.timerCheck())timer.cancel();
-        wl.acquire();
-
+        if (wl != null) {
+            wl.release();
+            wl=null;
+        }
     }
 
     @Override

@@ -2,5 +2,5 @@
     <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="image_height">330dp</dimen>
     <dimen name="frame_image_height">357dp</dimen>
-
+    <dimen name="thumb_flipper_hight">400dp</dimen>
 </resources>

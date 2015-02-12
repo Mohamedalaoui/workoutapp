@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Theme -->
+    <color name="color_primary">#009688</color>
+    <color name="color_secondary">#1DE9B6</color>
+    <color name="color_primary_dark">#00796B</color>
+    <color name="text_color_primary">#FFFFFF</color>
+    <color name="color_accent">#FFFFFF</color>
 
     <!-- Background -->
     <color name="background_splash">#009688</color>
@@ -18,19 +24,11 @@
     <color name="btn_disable">#40000000</color>
     <color name="btn_enable">#1E88E5</color>
 
-
     <!--Text -->
     <color name="text_sub_title">#777777</color>
     <color name="text_title">#212121</color>
     <color name="text_title_detail">#ffffff</color>
     <color name="text_header">#ffffff</color>
-
-    <!-- Theme -->
-    <color name="color_primary">#009688</color>
-    <color name="color_secondary">#1DE9B6</color>
-    <color name="color_primary_dark">#00796B</color>
-    <color name="text_color_primary">#FFFFFF</color>
-    <color name="color_accent">#FFFFFF</color>
 
     <color name="background_gradient_color_start">#00000000</color>
     <color name="background_gradient_color_end">#50000000</color>

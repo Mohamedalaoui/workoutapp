@@ -99,6 +99,10 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
         btnReset.setOnClickListener(this);
         btnSound.setOnClickListener(this);
 
+        // Setting button reset disable in the beginning
+        btnReset.setEnabled(false);
+        btnReset.setTextColor(getResources().getColor(R.color.btn_disable));
+
         txtTimer.setText(mListTime.get(paramData));
 
         // Customization Title text
@@ -199,8 +203,6 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
 
             DisplayMetrics dm = new DisplayMetrics();
             getWindowManager().getDefaultDisplay().getMetrics(dm);
-            int screenWidth = dm.widthPixels;
-            int screenHeight = screenWidth / 2 + 50;
 
             if(paramData > 1){
                 txtTitle.setText(mCurrenntWorkout+"/"+ mListName.size()+"  "+ mListName.get(paramData-1));
@@ -218,14 +220,14 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
 
             for(int i=0;i<Images.size();i++){
                 FrameLayout fl = new FrameLayout(ActivityStopWatchAll.this);
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(screenWidth, screenHeight);
+                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, getResources().getDimensionPixelSize(R.dimen.thumb_flipper_hight));
+
                 fl.setLayoutParams(lp);
 
                 ImageView imgWorkout = new ImageView(ActivityStopWatchAll.this);
-                imgWorkout.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                imgWorkout.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 int imagedata = getResources().getIdentifier(Images.get(i), "drawable", getPackageName());
                 imgWorkout.setImageResource(imagedata);
-
                 fl.addView(imgWorkout, new ViewGroup.LayoutParams(
                         ViewGroup.LayoutParams.MATCH_PARENT,
                         ViewGroup.LayoutParams.MATCH_PARENT));
@@ -396,6 +398,20 @@ public class ActivityStopWatchAll extends ActionBarActivity implements View.OnCl
         }
 
     }
+
+    /** Called before the activity is stop */
+    @Override
+    public void onStop() {
+        super.onStop();
+        if(timer.timerCheck())timer.cancel();
+
+        if (wl != null) {
+            wl.release();
+            wl=null;
+        }
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem menuItem) {
         switch (menuItem.getItemId()) {

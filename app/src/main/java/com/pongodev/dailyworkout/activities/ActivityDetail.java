@@ -125,7 +125,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
         btnStart.setOnClickListener(this);
         btnAdd.setOnClickListener(this);
 
-        // Check ad visibility. If visible, display ad banner and interstitial.
+// Check ad visibility. If visible, display ad banner and interstitial.
         InterstitialAd interstitialAd = new InterstitialAd(this);
         boolean isAdmobVisible = Utils.admobVisibility(adView, Utils.ARG_ADMOB_VISIBILITY);
         if(isAdmobVisible) {
@@ -134,6 +134,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
             // When interstitialTrigger equals ARG_TRIGGER_VALUE, display interstitial ad.
             int interstitialTrigger = Utils.loadPreferences(Utils.ARG_TRIGGER, this);
             if(interstitialTrigger == Utils.ARG_TRIGGER_VALUE) {
+
                 Utils.loadAdmobInterstitial(interstitialAd, this);
                 Utils.savePreferences(Utils.ARG_TRIGGER, 0, this);
             }else{
@@ -195,8 +196,7 @@ public class ActivityDetail extends ActionBarActivity implements View.OnClickLis
             if(!data.isEmpty()){
                 txtSubtitle.setText(mTime);
                 txtSteps.setText(mSteps);
-                //int image = getResources().getIdentifier(mImage, "drawable", getPackageName());
-                int image = getResources().getIdentifier("ic_dummy_image", "drawable", getPackageName());
+                int image = getResources().getIdentifier(mImage, "drawable", getPackageName());
                 Picasso.with(getApplicationContext())
                         .load(image)
                         .into(imgThumbnail);

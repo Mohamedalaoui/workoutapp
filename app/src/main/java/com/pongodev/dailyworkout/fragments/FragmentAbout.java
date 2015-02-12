@@ -109,7 +109,7 @@ public class FragmentAbout extends Fragment {
             mCallback = (OnItemSelectedListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
-                    + " must implement OnRecipeSelectedListener");
+                    + " must implement OnWorkoutsSelectedListener");
         }
     }
 

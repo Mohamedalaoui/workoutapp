@@ -54,6 +54,8 @@ public class FragmentTabPrograms extends Fragment{
         prgLoading   = (ProgressBarCircularIndeterminate) v.findViewById(R.id.prgLoading);
         lblNoResult  = (TextView) v.findViewById(R.id.lblNoResult);
 
+        lblNoResult.setVisibility(View.GONE);
+
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(layoutManager);
@@ -117,8 +119,6 @@ public class FragmentTabPrograms extends Fragment{
 
             if(programDayIds.size() != 0){
                 recyclerView.setAdapter(la);
-            }else{
-                lblNoResult.setVisibility(View.VISIBLE);
             }
         }
     }

@@ -6,6 +6,7 @@
     <!-- Padding -->
     <dimen name="padding_content_adapter">16dp</dimen>
     <dimen name="padding_main">16dp</dimen>
+    <dimen name="padding_gradient_detail">8dp</dimen>
     <dimen name="padding_gradient">13dp</dimen>
     <dimen name="padding_content_bottom">15dp</dimen>
     <dimen name="row_padding">16dp</dimen>
@@ -14,6 +15,7 @@
     <!-- Thumbnail -->
     <dimen name="thumb_row_width">100dp</dimen>
     <dimen name="thumb_row_height">100dp</dimen>
+    <dimen name="thumb_flipper_hight">300dp</dimen>
     <dimen name="thumb_border">1dp</dimen>
 
     <!-- Margin -->

@@ -31,6 +31,6 @@
         android:layout_centerHorizontal="true"
         android:background="@color/background_content"
         android:visibility="gone"
-        ads:adUnitId="@string/admob_id"
+        ads:adUnitId="@string/banner_ad_unit_id"
         ads:adSize="SMART_BANNER"/>
 </RelativeLayout>

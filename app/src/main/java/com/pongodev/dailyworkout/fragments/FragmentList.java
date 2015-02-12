@@ -220,10 +220,10 @@ public class FragmentList extends Fragment implements View.OnClickListener{
 
         Bundle args = getArguments();
         if (args != null) {
-            // Set recipes based on argument passed in
+            // Set workouts based on argument passed in
             updateWorkout(args.getString(Utils.ARG_ID), args.getString(Utils.ARG_PAGE));
         } else if (!mSelectedID.equals("")) {
-            // Set recipes based on saved instance state defined during onCreateView
+            // Set workouts based on saved instance state defined during onCreateView
             updateWorkout(mSelectedID, mActivity);
         }
     }

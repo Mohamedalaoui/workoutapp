@@ -45,7 +45,7 @@
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
                         android:layout_gravity="bottom"
-                        android:padding="@dimen/padding_main"
+                        android:padding="@dimen/padding_gradient_detail"
                         android:background="@drawable/gradient_transparent_background">
                         <TextView
                             android:id="@+id/txtTitle"
@@ -149,7 +149,7 @@
         android:visibility="gone"
         android:layout_centerHorizontal="true"
         ads:adSize="BANNER"
-        ads:adUnitId="@string/admob_id"
+        ads:adUnitId="@string/banner_ad_unit_id"
         android:layout_alignParentBottom="true">
     </com.google.android.gms.ads.AdView>
 

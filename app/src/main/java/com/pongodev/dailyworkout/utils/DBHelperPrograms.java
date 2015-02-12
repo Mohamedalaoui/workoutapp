@@ -145,7 +145,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
             }
             cursor.close();
         } catch (SQLException e) {
-            Log.e("DB Error", e.toString());
+            Log.e("DB getallDays", e.toString());
             e.printStackTrace();
         }
 
@@ -190,7 +190,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
             }
             cursor.close();
         } catch (SQLException e) {
-            Log.e("DB Error", e.toString());
+            Log.e("DB getWorkoutListByDay", e.toString());
             e.printStackTrace();
         }
 
@@ -218,7 +218,8 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
 
             cursor.close();
         } catch (SQLException e) {
-            Log.e("DB Error", e.toString());
+            Log.e("DBProg isDataAvailable", e.toString());
+
             e.printStackTrace();
         }
 
@@ -239,7 +240,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
         try {
             db.insert(TABLE_PROGRAMS, null, values);
         } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
+            Log.e("DB addData", e.toString());
             e.printStackTrace();
         }
     }
@@ -250,7 +251,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
         try {
             db.delete(TABLE_PROGRAMS, PROGRAM_ID + "=" + programID, null);
         } catch (Exception e) {
-            Log.e("DB ERROR", e.toString());
+            Log.e("DB deleteData", e.toString());
             e.printStackTrace();
         }
     }
@@ -276,7 +277,7 @@ public class DBHelperPrograms extends SQLiteOpenHelper {
         }
         catch (SQLException e)
         {
-            Log.e("DB ERROR", e.toString());
+            Log.e("DB getWorkoutId", e.toString());
             e.printStackTrace();
         }
 

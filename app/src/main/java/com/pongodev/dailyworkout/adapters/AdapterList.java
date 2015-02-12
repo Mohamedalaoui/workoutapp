@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
 import com.makeramen.RoundedImageView;
 import com.pongodev.dailyworkout.R;
 import com.pongodev.dailyworkout.listeners.OnTapListener;
@@ -67,8 +68,7 @@ public class AdapterList extends RecyclerView.Adapter<AdapterList.ViewHolder>
         viewHolder.txtTime.setText(ListTime.get(position));
 
         // set data to image view
-        //int image = mContext.getResources().getIdentifier(ListImage.get(position), "drawable", mContext.getPackageName());
-        int image = mContext.getResources().getIdentifier("ic_dummy_image", "drawable", mContext.getPackageName());
+        int image = mContext.getResources().getIdentifier(ListImage.get(position), "drawable", mContext.getPackageName());
         Picasso.with(mContext)
                 .load(image)
                 .into(viewHolder.imgThumbnail);

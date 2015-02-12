@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Need Change with your -->
+    <!-- Banner ad id. Insert your own banner id, you can get banner id via admob. -->
+    <string name="banner_ad_unit_id">BANNER_AD_UNIT_ID</string>
+
+    <!-- Interstitial ad id. Insert your own interstitial id, you can get interstitial id via admob. -->
+    <string name="interstitial_ad_unit_id">INTERSTITIAL_AD_UNIT_ID</string>
+
+    <!-- Google Play url. Change your.package.name with your own package name. -->
+    <string name="google_play_url">https://play.google.com/store/apps/details?id=your.package.name</string>
+
     <!-- Default from android -->
     <string name="app_name">Daily Workout</string>
     <string name="hello_world">Hello world!</string>
@@ -11,12 +21,8 @@
     <string name="intro_message">Hi, i just try new exercise, </string>
     <string name="extra_message">. You can also try this exercise by downloading </string>
     <string name="here">here:</string>
-    <string name="google_play_url">https://play.google.com/store/apps/details?id=your.package.name</string>
     <string name="share_to">Share to</string>
 
-    <!-- Need Change with your -->
-    <!-- Admob -->
-    <string name="admob_id">a15362082509a1c</string>
 
     <!-- Menu -->
     <string name="menu_share_it">Share it</string>
@@ -52,12 +58,6 @@
     <string name="dialog_button_positif">DONE</string>
     <string name="dialog_button_positif_discard">DISCARD</string>
     <string name="dialog_button_negatif">CANCEL</string>
-
-    <!-- Banner ad id. Insert your own banner id, you can get banner id via admob. -->
-    <string name="banner_ad_unit_id">BANNER_AD_UNIT_ID</string>
-
-    <!-- Interstitial ad id. Insert your own interstitial id, you can get interstitial id via admob. -->
-    <string name="interstitial_ad_unit_id">INTERSTITIAL_AD_UNIT_ID</string>
 
     <string name="workout">Workout</string>
     <string name="workouts">Workouts</string>
